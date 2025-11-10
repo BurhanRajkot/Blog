@@ -1,0 +1,81 @@
+baseURL = "/"                   # Vercel will pass the real URL at build time
+languageCode = "en-us"
+title = "GamesHome"
+theme = "PaperMod"
+enableRobotsTXT = true
+canonifyURLs = true             # use the baseURL we pass at build time
+
+[pagination]
+pagerSize = 10
+
+[outputs]
+home    = ["HTML","RSS","JSON"]
+section = ["HTML","RSS"]
+taxonomy= ["HTML","RSS"]
+term    = ["HTML","RSS"]
+page    = ["HTML"]
+
+[permalinks]
+  programming = "/programming/:slug/"
+  gamedev     = "/gamedev/:slug/"
+  leaks       = "/leaks/:slug/"
+
+[sitemap]
+  changefreq = "daily"
+  priority = 0.5
+  filename = "sitemap.xml"
+
+[params]
+defaultTheme = "auto"
+showReadingTime = true
+showShareButtons = true
+showSearch = true
+mainSections = []               # homepage = intro only
+siteDescription = "Programming, game dev notes, and gaming leaks."
+
+[params.profileMode]
+enabled = true
+title = "Hi, I'm Burhanuddin"
+subtitle = "I write about Programming, Game Dev, and Leaks. Welcome to GamesHome."
+imageUrl = "/images/profile.jpg"     # put at static/images/profile.jpg (optional)
+imageTitle = "Burhanuddin"
+imageWidth = 140
+imageHeight = 140
+
+[[params.socialIcons]]
+name = "github"
+url  = "https://github.com/your-username"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[menu]
+  [[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+  [[menu.main]]
+  name = "Programming"
+  url = "/programming/"
+  weight = 2
+
+  [[menu.main]]
+  name = "Game Dev"
+  url = "/gamedev/"
+  weight = 3
+
+  [[menu.main]]
+  name = "Leaks"
+  url = "/leaks/"
+  weight = 4
+
+  [[menu.main]]
+  name = "About"
+  url = "/about/"
+  weight = 5
+
+[markup]
+  [markup.highlight]
+  noClasses = false
