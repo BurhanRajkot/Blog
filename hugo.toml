@@ -1,4 +1,4 @@
-baseURL =  "https://gameshome.vercel.app/"                # Vercel will pass the real URL at build time
+baseURL = "https://burhan-blog.vercel.app/"  //vercel blog commiting
 languageCode = "en-us"
 title = "GamesHome"
 theme = "PaperMod"
