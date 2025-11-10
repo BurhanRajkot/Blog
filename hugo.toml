@@ -1,4 +1,4 @@
-baseURL = "/"                   # Vercel will pass the real URL at build time
+baseURL =  "https://gameshome.vercel.app/"                # Vercel will pass the real URL at build time
 languageCode = "en-us"
 title = "GamesHome"
 theme = "PaperMod"
