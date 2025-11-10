@@ -1,5 +1,4 @@
-baseURL = "https://burhan-blog.vercel.app/"  //vercel blog commiting
-languageCode = "en-us"
+baseURL = "https://burhan-blog.vercel.app/"  # production domain
 title = "GamesHome"
 theme = "PaperMod"
 enableRobotsTXT = true
