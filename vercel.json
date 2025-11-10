@@ -5,6 +5,6 @@
       "HUGO_ENV": "production"
     }
   },
-  "buildCommand": "hugo --gc --minify --baseURL \"$HUGO_BASEURL\"",
+  "buildCommand": "hugo --gc --baseURL \"$HUGO_BASEURL\"",
   "outputDirectory": "public"
 }
