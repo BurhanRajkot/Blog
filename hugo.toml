@@ -1,4 +1,4 @@
-baseURL = "https://burhan-blog.vercel.app/"  # production domain
+baseURL = "/"
 title = "GamesHome"
 theme = "PaperMod"
 enableRobotsTXT = true
