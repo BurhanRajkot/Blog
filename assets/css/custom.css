@@ -1,6 +1,188 @@
-/* Minimal polish: tighten headings, nicer code blocks, subtle card hover */
-.post-title, .page-title { letter-spacing: 0.1px; }
-.post-entry { transition: transform .15s ease, box-shadow .15s ease; }
-.post-entry:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.08); }
-code { padding: .15rem .3rem; border-radius: .25rem; }
-pre code { padding: 0; }
+/* ---------- Typography & Headings ---------- */
+.post-title,
+.page-title {
+  letter-spacing: 0.1px;
+  margin-top: 0.2rem;
+}
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  word-spacing: 0.5px;
+}
+
+/* ---------- Post Cards ---------- */
+.post-entry {
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+  border-radius: 10px;
+}
+.post-entry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode card softness */
+@media (prefers-color-scheme: dark) {
+  .post-entry:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ---------- Code Blocks ---------- */
+code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.3rem;
+  background: rgba(127, 127, 127, 0.12);
+}
+pre {
+  overflow: auto;
+  border-radius: 12px;
+  padding: 1rem;
+}
+pre code {
+  padding: 0; /* keep pre padding in charge */
+  background: none; /* avoid double background */
+}
+@media (prefers-color-scheme: dark) {
+  pre {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* ---------- Links & Focus ---------- */
+a {
+  transition: color 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
+}
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.6); /* subtle indigo focus */
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- Social Icons Row (PaperMod) ---------- */
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  transition: transform 0.12s ease, background-color 0.12s ease,
+    box-shadow 0.12s ease, opacity 0.12s ease;
+}
+.social-icons a:hover {
+  transform: translateY(-1px);
+  background-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  .social-icons a:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Slight brand cues on hover (no custom colors needed) */
+.social-icons a[title*='github']:hover {
+  opacity: 0.9;
+}
+.social-icons a[title*='linkedin']:hover {
+  opacity: 0.9;
+}
+.social-icons a[title*='gmail']:hover {
+  opacity: 0.9;
+}
+
+/* ---------- Buttons (e.g., read more) ---------- */
+.button,
+.btn {
+  border-radius: 10px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.button:hover,
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- Header & Nav polish ---------- */
+.site-title {
+  letter-spacing: 0.2px;
+}
+.nav {
+  gap: 0.35rem;
+}
+.nav a {
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+.nav a:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+@media (prefers-color-scheme: dark) {
+  .nav a:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* ---------- Small layout niceties ---------- */
+.main {
+  scroll-margin-top: 80px; /* better anchor jumps under fixed headers */
+}
+.post-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.post-footer .post-social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0.4rem;
+  color: inherit;
+  opacity: 0.8;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.post-footer .post-social-links a:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .post-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+}
+
+.custom-social,
+.share-buttons.custom-social {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.share-buttons.custom-social {
+  margin-top: 0.5rem;
+}
+
+.custom-social .share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--entry);
+  transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
+  opacity: 0.9;
+}
+.custom-social .share-btn:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}

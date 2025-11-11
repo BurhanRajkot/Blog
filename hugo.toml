@@ -1,6 +1,6 @@
 baseURL = "/"
 languageCode = "en-us"
-title = "GamesHome"
+title = "GamersHome"
 theme = "PaperMod"
 enableRobotsTXT = true
 canonifyURLs = true
@@ -19,6 +19,8 @@ page    = ["HTML"]
   programming = "/programming/:slug/"
   gamedev     = "/gamedev/:slug/"
   leaks       = "/leaks/:slug/"
+  books       = "/books/:slug/"
+  others      = "/others/:slug/"
 
 [sitemap]
   changefreq = "daily"
@@ -28,23 +30,32 @@ page    = ["HTML"]
 [params]
 defaultTheme = "auto"
 showReadingTime = true
-showShareButtons = true
+showShareButtons = true          # ✅ enabled so your custom share partial shows the 3 icons
 showSearch = true
-mainSections = []               # homepage = intro only
+mainSections = []                # homepage = intro only
 siteDescription = "Programming, game dev notes, and gaming leaks."
 
 [params.profileMode]
 enabled = true
 title = "Hi, I'm Burhanuddin"
-subtitle = "I write about Programming, Game Dev, and Leaks. Welcome to GamesHome."
+subtitle = "I write about Programming, Game Dev, and Gaming Leaks and Books. Welcome to GamersHome."
 imageUrl = "/images/profile.jpg"     # put at static/images/profile.jpg (optional)
 imageTitle = "Burhanuddin"
 imageWidth = 140
 imageHeight = 140
 
+# ✅ Only these 3 social icons appear globally (footer + profile)
 [[params.socialIcons]]
 name = "github"
 url  = "https://github.com/BurhanRajkot"
+
+[[params.socialIcons]]
+name = "linkedin"
+url  = "https://www.linkedin.com/in/burhanuddin-rajkotwala-84722b326/"
+
+[[params.socialIcons]]
+name = "gmail"
+url  = "mailto:burhanuddinrajkotwala11@gmail.com"
 
 [taxonomies]
   tag = "tags"
@@ -72,9 +83,19 @@ url  = "https://github.com/BurhanRajkot"
   weight = 4
 
   [[menu.main]]
+  name = "Books"
+  url = "/books/"
+  weight = 5
+
+  [[menu.main]]
+  name = "Others"
+  url = "/others/"
+  weight = 6
+
+  [[menu.main]]
   name = "About"
   url = "/about/"
-  weight = 5
+  weight = 7
 
 [markup]
   [markup.highlight]

@@ -13,4 +13,4 @@ None of my content is generated using any form of AI — I only use it to **conv
 All of my content is uploaded first on a **public GitHub repository**, freely available for anyone to explore or reuse.
 
 I know maybe no one will read this,
-but if you did — **THANK YOU **
+but if you did — THANK YOU
