@@ -132,13 +132,14 @@ button:focus-visible,
 .main {
   scroll-margin-top: 80px; /* better anchor jumps under fixed headers */
 }
+
+/* ---------- Post Footer (for custom trio if you use it there) ---------- */
 .post-footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   text-align: center;
 }
-
 .post-footer .post-social-links a {
   display: inline-flex;
   align-items: center;
@@ -148,18 +149,18 @@ button:focus-visible,
   opacity: 0.8;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
-
 .post-footer .post-social-links a:hover {
   transform: translateY(-1px);
   opacity: 1;
 }
-
 @media (prefers-color-scheme: dark) {
   .post-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.12);
   }
 }
 
+/* ---------- Custom share row (only GitHub/LinkedIn/Gmail) ---------- */
+/* Works with layouts/partials/share-icons.html override */
 .custom-social,
 .share-buttons.custom-social {
   display: flex;
@@ -169,7 +170,6 @@ button:focus-visible,
 .share-buttons.custom-social {
   margin-top: 0.5rem;
 }
-
 .custom-social .share-btn {
   display: inline-flex;
   align-items: center;
@@ -178,6 +178,7 @@ button:focus-visible,
   height: 36px;
   border-radius: 10px;
   background: var(--entry);
+  color: inherit;
   transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
   opacity: 0.9;
 }
@@ -185,4 +186,102 @@ button:focus-visible,
   transform: translateY(-1px);
   opacity: 1;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  .custom-social .share-btn {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .custom-social .share-btn:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* Hide PaperMod's default share icons so only your custom trio appears */
+.share-buttons:not(.custom-social) {
+  display: none !important;
+}
+
+/* ---------- Profile Section (big circular image) ---------- */
+/* Use with your extend_footer.html profile block (or on home) */
+.profile-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+.profile-card {
+  max-width: 460px;
+  background: var(--entry);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+.profile-pic {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  object-fit: cover;
+}
+.profile-card h2 {
+  margin: 0.5rem 0;
+  font-size: 1.7rem;
+}
+.profile-card h2 span {
+  color: var(--primary);
+}
+.profile-card p {
+  color: var(--secondary);
+  font-size: 0.98rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.55;
+}
+.profile-social {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.profile-social a {
+  background: var(--theme);
+  color: var(--primary);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+.profile-social a:hover {
+  background: var(--primary);
+  color: var(--theme);
+  transform: translateY(-2px);
+}
+@media (prefers-color-scheme: dark) {
+  .profile-card {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  }
+  .profile-social a {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+  .profile-social a:hover {
+    background: var(--primary);
+    color: #000;
+  }
+}
+
+/* ---------- Footer polish ---------- */
+.footer {
+  opacity: 0.9;
+}
+.footer:hover {
+  opacity: 1;
 }

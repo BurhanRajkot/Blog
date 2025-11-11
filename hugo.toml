@@ -30,21 +30,22 @@ page    = ["HTML"]
 [params]
 defaultTheme = "auto"
 showReadingTime = true
-showShareButtons = true          # ✅ enabled so your custom share partial shows the 3 icons
+showShareButtons = true          # keep ON if you're using the custom share partial
 showSearch = true
-mainSections = []                # homepage = intro only
+mainSections = []                # change to ["programming","gamedev","leaks","books","others"] to list posts on home
 siteDescription = "Programming, game dev notes, and gaming leaks."
 
 [params.profileMode]
 enabled = true
 title = "Hi, I'm Burhanuddin"
 subtitle = "I write about Programming, Game Dev, and Gaming Leaks and Books. Welcome to GamersHome."
-imageUrl = "/images/profile.jpg"     # put at static/images/profile.jpg (optional)
+imageUrl = "/images/profile.jpg"
 imageTitle = "Burhanuddin"
-imageWidth = 140
-imageHeight = 140
+imageWidth = 300    # increased from 140
+imageHeight = 300   # same here
 
-# ✅ Only these 3 social icons appear globally (footer + profile)
+
+# Only these 3 social icons appear globally (profile/footer)
 [[params.socialIcons]]
 name = "github"
 url  = "https://github.com/BurhanRajkot"
