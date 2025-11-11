@@ -14,8 +14,3 @@ All of my content is uploaded first on a **public GitHub repository**, freely av
 
 I know maybe no one will read this,
 but if you did — **THANK YOU **
-
----
-
-👋 I'm **Burhanuddin**.
-Welcome to **GamesHome** — I write about **Programming**, **Game Dev**, and **Gaming Leaks**.
