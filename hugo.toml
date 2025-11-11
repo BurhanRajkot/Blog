@@ -41,8 +41,8 @@ title = "Hi, I'm Burhanuddin"
 subtitle = "I write about Programming, Game Dev, and Gaming Leaks and Books. Welcome to GamersHome."
 imageUrl = "/images/profile.jpg"
 imageTitle = "Burhanuddin"
-imageWidth = 300    # increased from 140
-imageHeight = 300   # same here
+imageWidth = 350    # increased from 140
+imageHeight = 350   # same here
 
 
 # Only these 3 social icons appear globally (profile/footer)
