@@ -1,7 +1,10 @@
 ---
 title: 'Unity 20th Anniversary Game Jam – My Experience'
 description: 'My rushed, chaotic, and fun experience making a Unity endless game for the 20th Anniversary Game Jam.'
-date: 2025-11-17
+date: 2025-11-10
+draft: false
+categories: ['Game Dev']
+tags: ['unity', 'game jam', 'endless runner', 'gamedev']
 ---
 
 # Welcome to the Game Dev
