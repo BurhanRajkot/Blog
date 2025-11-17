@@ -38,7 +38,7 @@ siteDescription = "Programming, game dev notes, and gaming leaks."
 [params.profileMode]
 enabled = true
 title = "Hi, I'm Burhanuddin"
-subtitle = "I write about Programming, Game Dev, and Gaming Leaks and Books. Welcome to GamersHome."
+subtitle = "I write about Programming, Game Dev, and Gaming Leaks and Books. Welcome to my blog."
 imageUrl = "/images/profile.jpg"
 imageTitle = "Burhanuddin"
 imageWidth = 450    # increased from 140
