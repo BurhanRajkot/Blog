@@ -1,25 +1,49 @@
+/* ---------- Design Tokens (optional but handy) ---------- */
+:root {
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition-fast: 0.12s ease;
+  --transition-med: 0.15s ease;
+  --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.08);
+  --shadow-softer: 0 8px 28px rgba(0, 0, 0, 0.12);
+  --shadow-strong: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 /* ---------- Typography & Headings ---------- */
 .post-title,
 .page-title {
-  letter-spacing: 0.1px;
+  letter-spacing: 0.01em;
   margin-top: 0.2rem;
 }
+
 h1,
 h2,
 h3 {
   line-height: 1.2;
-  word-spacing: 0.5px;
+  word-spacing: 0.03em;
 }
 
 /* ---------- Post Cards ---------- */
 .post-entry {
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background-color 0.15s ease;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-med), box-shadow var(--transition-med),
+    background-color var(--transition-med);
 }
+
 .post-entry:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Dark mode card softness */
@@ -35,15 +59,18 @@ code {
   border-radius: 0.3rem;
   background: rgba(127, 127, 127, 0.12);
 }
+
 pre {
   overflow: auto;
   border-radius: 12px;
   padding: 1rem;
 }
+
 pre code {
   padding: 0; /* keep pre padding in charge */
   background: none; /* avoid double background */
 }
+
 @media (prefers-color-scheme: dark) {
   pre {
     background: rgba(255, 255, 255, 0.04);
@@ -52,14 +79,17 @@ pre code {
 
 /* ---------- Links & Focus ---------- */
 a {
-  transition: color 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
+  transition: color var(--transition-fast),
+    background-color var(--transition-fast), opacity var(--transition-fast);
 }
+
+/* Stronger focus for keyboard users */
 a:focus-visible,
 button:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid rgba(99, 102, 241, 0.6); /* subtle indigo focus */
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline: 2px solid rgba(99, 102, 241, 0.7);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
 
 /* ---------- Social Icons Row (PaperMod) ---------- */
@@ -70,14 +100,17 @@ button:focus-visible,
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  transition: transform 0.12s ease, background-color 0.12s ease,
-    box-shadow 0.12s ease, opacity 0.12s ease;
+  transition: transform var(--transition-fast),
+    background-color var(--transition-fast), box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
 }
+
 .social-icons a:hover {
   transform: translateY(-1px);
   background-color: rgba(0, 0, 0, 0.06);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
+
 @media (prefers-color-scheme: dark) {
   .social-icons a:hover {
     background-color: rgba(255, 255, 255, 0.08);
@@ -85,43 +118,57 @@ button:focus-visible,
   }
 }
 
-/* Slight brand cues on hover (no custom colors needed) */
-.social-icons a[title*='github']:hover {
-  opacity: 0.9;
-}
-.social-icons a[title*='linkedin']:hover {
-  opacity: 0.9;
-}
-.social-icons a[title*='gmail']:hover {
+/* Slight brand cues on hover (kept subtle) */
+.social-icons a[title*='github' i]:hover,
+.social-icons a[title*='linkedin' i]:hover,
+.social-icons a[title*='gmail' i]:hover {
   opacity: 0.9;
 }
 
 /* ---------- Buttons (e.g., read more) ---------- */
 .button,
 .btn {
-  border-radius: 10px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast), background-color var(--transition-fast),
+    color var(--transition-fast);
 }
+
 .button:hover,
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
+/* Keyboard focus on custom buttons */
+.button:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.7);
+  outline-offset: 3px;
+}
+
 /* ---------- Header & Nav polish ---------- */
 .site-title {
-  letter-spacing: 0.2px;
+  letter-spacing: 0.02em;
 }
+
 .nav {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.35rem;
 }
+
 .nav a {
   padding: 0.25rem 0.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast),
+    opacity var(--transition-fast);
 }
+
 .nav a:hover {
   background: rgba(0, 0, 0, 0.04);
 }
+
 @media (prefers-color-scheme: dark) {
   .nav a:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -133,13 +180,14 @@ button:focus-visible,
   scroll-margin-top: 80px; /* better anchor jumps under fixed headers */
 }
 
-/* ---------- Post Footer (for custom trio if you use it there) ---------- */
+/* ---------- Post Footer ---------- */
 .post-footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   text-align: center;
 }
+
 .post-footer .post-social-links a {
   display: inline-flex;
   align-items: center;
@@ -147,50 +195,66 @@ button:focus-visible,
   margin: 0 0.4rem;
   color: inherit;
   opacity: 0.8;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform var(--transition-med), opacity var(--transition-med);
 }
+
 .post-footer .post-social-links a:hover {
   transform: translateY(-1px);
   opacity: 1;
 }
+
 @media (prefers-color-scheme: dark) {
   .post-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.12);
   }
 }
 
-/* ---------- Custom share row (only GitHub/LinkedIn/Gmail) ---------- */
+/* ---------- Custom share row (GitHub / LinkedIn / Gmail) ---------- */
 /* Works with layouts/partials/share-icons.html override */
 .custom-social,
 .share-buttons.custom-social {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  flex-wrap: wrap;
 }
+
 .share-buttons.custom-social {
   margin-top: 0.5rem;
 }
+
 .custom-social .share-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--entry);
   color: inherit;
-  transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
   opacity: 0.9;
+  text-decoration: none;
+  transition: transform var(--transition-fast), opacity var(--transition-fast),
+    box-shadow var(--transition-fast), background-color var(--transition-fast),
+    color var(--transition-fast);
 }
+
 .custom-social .share-btn:hover {
   transform: translateY(-1px);
   opacity: 1;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
+
+.custom-social .share-btn:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.7);
+  outline-offset: 3px;
+}
+
 @media (prefers-color-scheme: dark) {
   .custom-social .share-btn {
     background: rgba(255, 255, 255, 0.06);
   }
+
   .custom-social .share-btn:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   }
@@ -202,7 +266,7 @@ button:focus-visible,
 }
 
 /* ---------- Profile Section (big circular image) ---------- */
-/* Use with your extend_footer.html profile block (or on home) */
+/* Use with extend_footer.html profile block (or on home) */
 .profile-section {
   display: flex;
   justify-content: center;
@@ -210,68 +274,94 @@ button:focus-visible,
   padding: 3rem 1rem;
   text-align: center;
 }
+
 .profile-card {
   max-width: 460px;
+  width: 100%;
   background: var(--entry);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .profile-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
+
 .profile-pic {
-  width: 160px;
-  height: 160px;
+  width: 260px;
+  height: 260px;
   border-radius: 50%;
   margin-bottom: 1rem;
   border: 4px solid rgba(255, 255, 255, 0.15);
   object-fit: cover;
 }
+
+/* Responsive tweak for small screens */
+@media (max-width: 480px) {
+  .profile-pic {
+    width: 130px;
+    height: 130px;
+  }
+}
+
 .profile-card h2 {
   margin: 0.5rem 0;
-  font-size: 1.7rem;
+  font-size: clamp(1.4rem, 2vw + 1rem, 1.7rem);
 }
+
 .profile-card h2 span {
   color: var(--primary);
 }
+
 .profile-card p {
   color: var(--secondary);
   font-size: 0.98rem;
   margin-bottom: 1.5rem;
   line-height: 1.55;
 }
+
 .profile-social {
   display: flex;
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
 }
+
 .profile-social a {
   background: var(--theme);
   color: var(--primary);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.55rem 1rem;
   font-size: 0.92rem;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
+
 .profile-social a:hover {
   background: var(--primary);
   color: var(--theme);
   transform: translateY(-2px);
 }
+
+.profile-social a:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.7);
+  outline-offset: 3px;
+}
+
 @media (prefers-color-scheme: dark) {
   .profile-card {
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-strong);
   }
+
   .profile-social a {
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
   }
+
   .profile-social a:hover {
     background: var(--primary);
     color: #000;
@@ -281,7 +371,9 @@ button:focus-visible,
 /* ---------- Footer polish ---------- */
 .footer {
   opacity: 0.9;
+  transition: opacity var(--transition-fast);
 }
+
 .footer:hover {
   opacity: 1;
 }
