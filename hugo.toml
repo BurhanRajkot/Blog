@@ -5,16 +5,19 @@ theme = "PaperMod"
 enableRobotsTXT = true
 canonifyURLs = true
 
+# How many posts per page (PaperMod uses this internally)
 [pagination]
-pagerSize = 10
+  pagerSize = 10
 
+# What Hugo generates
 [outputs]
-home    = ["HTML","RSS","JSON"]
-section = ["HTML","RSS"]
-taxonomy= ["HTML","RSS"]
-term    = ["HTML","RSS"]
-page    = ["HTML"]
+  home    = ["HTML", "RSS", "JSON"]
+  section = ["HTML", "RSS"]
+  taxonomy= ["HTML", "RSS"]
+  term    = ["HTML", "RSS"]
+  page    = ["HTML"]
 
+# Custom pretty URLs per section
 [permalinks]
   programming = "/programming/:slug/"
   gamedev     = "/gamedev/:slug/"
@@ -22,82 +25,108 @@ page    = ["HTML"]
   books       = "/books/:slug/"
   others      = "/others/:slug/"
 
+# Sitemap for SEO
 [sitemap]
   changefreq = "daily"
-  priority = 0.5
-  filename = "sitemap.xml"
+  priority   = 0.5
+  filename   = "sitemap.xml"
 
+# ------------ PaperMod Params ------------
 [params]
-defaultTheme = "auto"
-showReadingTime = true
-showShareButtons = true          # keep ON if you're using the custom share partial
-showSearch = true
-mainSections = []                # change to ["programming","gamedev","leaks","books","others"] to list posts on home
-siteDescription = "Programming, game dev notes, and gaming leaks."
+  defaultTheme      = "auto"    # auto | dark | light
+  siteDescription   = "Programming, game dev notes, gaming leaks, and books."
+  showReadingTime   = true
+  showShareButtons  = true      # you are using custom share partial
+  showSearch        = true
 
+  # Main sections that appear on home (recommended)
+  mainSections      = ["programming", "gamedev", "leaks", "books", "others"]
+
+  # Nice UX bits
+  ShowBreadCrumbs   = true
+  ShowCodeCopyButtons = true
+  disableThemeToggle  = false   # keep the theme switcher
+  comments           = false    # set true if you later add Disqus/Utterances/etc.
+
+  # Optional: small text under the title in browser tab (PaperMod label)
+  [params.label]
+    text = "GamersHome"
+    # icon = "/favicon.ico"     # uncomment & set if you add a favicon
+    # iconHeight = 32
+
+# Profile mode (PaperMod special home layout)
 [params.profileMode]
-enabled = true
-title = "Hi, I'm Burhanuddin"
-subtitle = "I write about Programming, Game Dev, and Gaming Leaks and Books. Welcome to my blog."
-imageUrl = "/images/profile.jpg"
-imageTitle = "Burhanuddin"
-imageWidth = 450    # increased from 140
-imageHeight = 450   # same here
-
+  enabled      = true
+  title        = "Hi, I'm Burhanuddin"
+  subtitle     = "I write about Programming, Game Dev, Gaming Leaks, and Books. Welcome to my blog."
+  imageUrl     = "/images/profile.jpg"
+  imageTitle   = "Burhanuddin"
+  imageWidth   = 450   # you can tweak this (visual size in profile mode)
+  imageHeight  = 450
 
 # Only these 3 social icons appear globally (profile/footer)
 [[params.socialIcons]]
-name = "github"
-url  = "https://github.com/BurhanRajkot"
+  name = "github"
+  url  = "https://github.com/BurhanRajkot"
 
 [[params.socialIcons]]
-name = "linkedin"
-url  = "https://www.linkedin.com/in/burhanuddin-rajkotwala-84722b326/"
+  name = "linkedin"
+  url  = "https://www.linkedin.com/in/burhanuddin-rajkotwala-84722b326/"
 
 [[params.socialIcons]]
-name = "gmail"
-url  = "mailto:burhanuddinrajkotwala11@gmail.com"
+  name = "gmail"
+  url  = "mailto:burhanuddinrajkotwala11@gmail.com"
 
+# ------------ Taxonomies ------------
 [taxonomies]
-  tag = "tags"
+  tag      = "tags"
   category = "categories"
 
+# ------------ Menus ------------
 [menu]
-  [[menu.main]]
-  name = "Home"
-  url = "/"
-  weight = 1
 
   [[menu.main]]
-  name = "Programming"
-  url = "/programming/"
-  weight = 2
+    name   = "Home"
+    url    = "/"
+    weight = 1
 
   [[menu.main]]
-  name = "Game Dev"
-  url = "/gamedev/"
-  weight = 3
+    name   = "Programming"
+    url    = "/programming/"
+    weight = 2
 
   [[menu.main]]
-  name = "Leaks"
-  url = "/leaks/"
-  weight = 4
+    name   = "Game Dev"
+    url    = "/gamedev/"
+    weight = 3
 
   [[menu.main]]
-  name = "Books"
-  url = "/books/"
-  weight = 5
+    name   = "Leaks"
+    url    = "/leaks/"
+    weight = 4
 
   [[menu.main]]
-  name = "Others"
-  url = "/others/"
-  weight = 6
+    name   = "Books"
+    url    = "/books/"
+    weight = 5
 
   [[menu.main]]
-  name = "About"
-  url = "/about/"
-  weight = 7
+    name   = "Others"
+    url    = "/others/"
+    weight = 6
 
+  [[menu.main]]
+    name   = "About"
+    url    = "/about/"
+    weight = 7
+
+# ------------ Markup / Code Highlighting ------------
 [markup]
+
   [markup.highlight]
-  noClasses = false
+    noClasses = false   # required for PaperMod's built-in code styling
+    # style = "dracula" # you can pick a theme if you want, or leave to CSS
+
+  # Optional: enable typographic smartness (quotes, dashes)
+  [markup.goldmark.renderer]
+    unsafe = true       # allows raw HTML in markdown (needed for some embeds)

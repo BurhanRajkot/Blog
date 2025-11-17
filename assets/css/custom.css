@@ -1,4 +1,6 @@
-/* ---------- Design Tokens (optional but handy) ---------- */
+/* =========================================
+Design Tokens
+   ========================================= */
 :root {
   --radius-sm: 8px;
   --radius-md: 10px;
@@ -20,7 +22,9 @@
   }
 }
 
-/* ---------- Typography & Headings ---------- */
+/* =========================================
+Typography & Headings
+   ========================================= */
 .post-title,
 .page-title {
   letter-spacing: 0.01em;
@@ -34,7 +38,108 @@ h3 {
   word-spacing: 0.03em;
 }
 
-/* ---------- Post Cards ---------- */
+/* Post content base */
+.post-content {
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.post-content p {
+  margin: 0.7rem 0;
+}
+
+.post-content h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.5rem;
+}
+
+.post-content h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 0.8rem;
+}
+
+/* Blockquotes */
+.post-content blockquote {
+  margin: 1.5rem 0;
+  padding: 0.9rem 1.1rem;
+  border-left: 4px solid var(--primary);
+  background: rgba(127, 127, 127, 0.06);
+  border-radius: 0.5rem;
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  .post-content blockquote {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* Inline links inside posts */
+.post-content a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.post-content a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Images inside posts */
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+/* Avoid changing the profile pic */
+.post-content img:not(.profile-pic) {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+}
+
+/* Tables inside posts */
+.post-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.post-content th,
+.post-content td {
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  padding: 0.5rem 0.75rem;
+}
+
+.post-content th {
+  background: rgba(127, 127, 127, 0.08);
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .post-content th,
+  .post-content td {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .post-content th {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* =========================================
+Post Cards
+   ========================================= */
 .post-entry {
   border-radius: var(--radius-md);
   transition: transform var(--transition-med), box-shadow var(--transition-med),
@@ -53,7 +158,9 @@ h3 {
   }
 }
 
-/* ---------- Code Blocks ---------- */
+/* =========================================
+Code Blocks
+   ========================================= */
 code {
   padding: 0.15rem 0.35rem;
   border-radius: 0.3rem;
@@ -77,7 +184,9 @@ pre code {
   }
 }
 
-/* ---------- Links & Focus ---------- */
+/* =========================================
+Links & Focus
+   ========================================= */
 a {
   transition: color var(--transition-fast),
     background-color var(--transition-fast), opacity var(--transition-fast);
@@ -92,7 +201,9 @@ button:focus-visible,
   border-radius: var(--radius-sm);
 }
 
-/* ---------- Social Icons Row (PaperMod) ---------- */
+/* =========================================
+Social Icons Row (PaperMod)
+   ========================================= */
 .social-icons a {
   display: inline-flex;
   align-items: center;
@@ -125,7 +236,9 @@ button:focus-visible,
   opacity: 0.9;
 }
 
-/* ---------- Buttons (e.g., read more) ---------- */
+/* =========================================
+Buttons (e.g., read more)
+   ========================================= */
 .button,
 .btn {
   border-radius: var(--radius-md);
@@ -147,7 +260,9 @@ button:focus-visible,
   outline-offset: 3px;
 }
 
-/* ---------- Header & Nav polish ---------- */
+/* =========================================
+Header & Nav Polish
+   ========================================= */
 .site-title {
   letter-spacing: 0.02em;
 }
@@ -175,12 +290,26 @@ button:focus-visible,
   }
 }
 
-/* ---------- Small layout niceties ---------- */
+/* =========================================
+Layout / Main Wrapper
+   ========================================= */
 .main {
   scroll-margin-top: 80px; /* better anchor jumps under fixed headers */
+  max-width: 900px;
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
 
-/* ---------- Post Footer ---------- */
+/* For very large screens, give a bit more breathing space */
+@media (min-width: 1200px) {
+  .main {
+    max-width: 980px;
+  }
+}
+
+/* =========================================
+Post Footer
+   ========================================= */
 .post-footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -209,7 +338,9 @@ button:focus-visible,
   }
 }
 
-/* ---------- Custom share row (GitHub / LinkedIn / Gmail) ---------- */
+/* =========================================
+ustom Share Row (GitHub / LinkedIn / Gmail)
+   ========================================= */
 /* Works with layouts/partials/share-icons.html override */
 .custom-social,
 .share-buttons.custom-social {
@@ -265,7 +396,9 @@ button:focus-visible,
   display: none !important;
 }
 
-/* ---------- Profile Section (big circular image) ---------- */
+/* =========================================
+Profile Section (big circular image)
+   ========================================= */
 /* Use with extend_footer.html profile block (or on home) */
 .profile-section {
   display: flex;
@@ -368,7 +501,9 @@ button:focus-visible,
   }
 }
 
-/* ---------- Footer polish ---------- */
+/* =========================================
+Footer Polish
+   ========================================= */
 .footer {
   opacity: 0.9;
   transition: opacity var(--transition-fast);
