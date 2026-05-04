@@ -1,6 +1,6 @@
 baseURL = "/"
 languageCode = "en-us"
-title = "GamersHome"
+title = "Noitas"
 theme = "PaperMod"
 enableRobotsTXT = true
 canonifyURLs = true
@@ -21,9 +21,8 @@ canonifyURLs = true
 [permalinks]
   programming = "/programming/:slug/"
   gamedev     = "/gamedev/:slug/"
-  leaks       = "/leaks/:slug/"
   books       = "/books/:slug/"
-  others      = "/others/:slug/"
+  mylife      = "/mylife/:slug/"
 
 # Sitemap for SEO
 [sitemap]
@@ -34,13 +33,13 @@ canonifyURLs = true
 # ------------ PaperMod Params ------------
 [params]
   defaultTheme      = "auto"    # auto | dark | light
-  siteDescription   = "Programming, game dev notes, gaming leaks, and books."
+  siteDescription   = "Programming, game dev notes, things going on in my life, and books."
   showReadingTime   = true
   showShareButtons  = true      # you are using custom share partial
   showSearch        = true
 
   # Main sections that appear on home (recommended)
-  mainSections      = ["programming", "gamedev", "leaks", "books", "others"]
+  mainSections      = ["programming", "gamedev", "books", "mylife"]
 
   # Nice UX bits
   ShowBreadCrumbs   = true
@@ -48,9 +47,12 @@ canonifyURLs = true
   disableThemeToggle  = false   # keep the theme switcher
   comments           = false    # set true if you later add Disqus/Utterances/etc.
 
+  [params.author]
+    name = "Burhanuddin"
+    email = "burhanuddinrajkotwala11@gmail.com"
   # Optional: small text under the title in browser tab (PaperMod label)
   [params.label]
-    text = "GamersHome"
+    text = "Noitas"
     # icon = "/favicon.ico"     # uncomment & set if you add a favicon
     # iconHeight = 32
 
@@ -58,11 +60,11 @@ canonifyURLs = true
 [params.profileMode]
   enabled      = true
   title        = "Hi, I'm Burhanuddin"
-  subtitle     = "I write about Programming, Game Dev, Gaming Leaks, and Books. Welcome to my blog."
+  subtitle     = "I write about programming, game dev, and things going on in my life. Welcome to my blog."
   imageUrl     = "/images/profile.jpg"
   imageTitle   = "Burhanuddin"
-  imageWidth   = 450   # you can tweak this (visual size in profile mode)
-  imageHeight  = 450
+  imageWidth   = 600   # you can tweak this (visual size in profile mode)
+  imageHeight  = 600
 
 # Only these 3 social icons appear globally (profile/footer)
 [[params.socialIcons]]
@@ -101,24 +103,19 @@ canonifyURLs = true
     weight = 3
 
   [[menu.main]]
-    name   = "Leaks"
-    url    = "/leaks/"
+    name   = "Books"
+    url    = "/books/"
     weight = 4
 
   [[menu.main]]
-    name   = "Books"
-    url    = "/books/"
+    name   = "My Life"
+    url    = "/mylife/"
     weight = 5
-
-  [[menu.main]]
-    name   = "Others"
-    url    = "/others/"
-    weight = 6
 
   [[menu.main]]
     name   = "About"
     url    = "/about/"
-    weight = 7
+    weight = 6
 
 # ------------ Markup / Code Highlighting ------------
 [markup]
