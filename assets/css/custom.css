@@ -3,13 +3,45 @@ Design Tokens
    ========================================= */
 :root {
   --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --transition-fast: 0.12s ease;
-  --transition-med: 0.15s ease;
-  --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.08);
-  --shadow-softer: 0 8px 28px rgba(0, 0, 0, 0.12);
-  --shadow-strong: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition-fast: 0.15s ease;
+  --transition-med: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-softer: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-strong: 0 10px 40px rgba(0, 0, 0, 0.3);
+  --font-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font-base) !important;
+}
+
+h1, h2, h3, h4, h5, h6, .site-title, .profile-card h2, .post-title {
+  font-family: var(--font-heading) !important;
+  letter-spacing: -0.02em;
+}
+
+/* Modern Dark Mode Colors (Slate) */
+.dark {
+  --theme: #0f172a !important;
+  --entry: #1e293b !important;
+  --primary: #f8fafc !important;
+  --secondary: #cbd5e1 !important;
+  --tertiary: #94a3b8 !important;
+  --content: #e2e8f0 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.light) {
+    --theme: #0f172a !important;
+    --entry: #1e293b !important;
+    --primary: #f8fafc !important;
+    --secondary: #cbd5e1 !important;
+    --tertiary: #94a3b8 !important;
+    --content: #e2e8f0 !important;
+  }
 }
 
 /* Respect users who prefer reduced motion */
@@ -143,19 +175,34 @@ Post Cards
 .post-entry {
   border-radius: var(--radius-md);
   transition: transform var(--transition-med), box-shadow var(--transition-med),
-    background-color var(--transition-med);
+    background-color var(--transition-med), border-color var(--transition-med);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: var(--entry);
 }
 
 .post-entry:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-soft);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-softer);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Dark mode card softness */
 @media (prefers-color-scheme: dark) {
-  .post-entry:hover {
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  body:not(.light) .post-entry {
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
+  body:not(.light) .post-entry:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.dark .post-entry {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.dark .post-entry:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* =========================================
@@ -430,6 +477,14 @@ Profile Section (big circular image)
   margin-bottom: 1rem;
   border: 4px solid rgba(255, 255, 255, 0.15);
   object-fit: cover;
+  animation: floatProfile 6s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+@keyframes floatProfile {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 /* Responsive tweak for small screens */
@@ -443,10 +498,15 @@ Profile Section (big circular image)
 .profile-card h2 {
   margin: 0.5rem 0;
   font-size: clamp(1.4rem, 2vw + 1rem, 1.7rem);
+  background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .profile-card h2 span {
   color: var(--primary);
+  -webkit-text-fill-color: initial;
 }
 
 .profile-card p {
@@ -511,4 +571,100 @@ Footer Polish
 
 .footer:hover {
   opacity: 1;
+}
+
+/* =========================================
+Modern Web App Enhancements
+   ========================================= */
+/* Glassmorphism Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.dark .header {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.light) .header {
+    background: rgba(15, 23, 42, 0.7) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Gradient Post Titles on Hover */
+.post-title {
+  transition: color var(--transition-fast);
+}
+
+.post-entry:hover .post-title {
+  background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =========================================
+Post Header Layout Polish
+   ========================================= */
+.post-header {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.breadcrumbs {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  display: inline-block;
+  align-self: flex-start;
+  background: rgba(127, 127, 127, 0.1);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.dark .breadcrumbs {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.post-header .post-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+}
+
+.post-description {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  padding-left: 1.2rem;
+  border-left: 4px solid #6366f1;
+  font-style: italic;
+}
+
+.post-meta {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(127, 127, 127, 0.2);
+}
+
+.dark .post-meta {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }

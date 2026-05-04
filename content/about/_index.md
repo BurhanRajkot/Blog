@@ -1,16 +1,15 @@
 ---
 title: 'About'
-description: 'About Burhanuddin and the GamesHome blog'
+description: 'About Noitas and the  blog'
 date: 2025-11-11
 ---
 
-# Hi everyone 👋
+Welcome to my personal corner of the internet.
 
-My name is **Burhan**, and I’m a **2nd year BTech CSE-DS student** from **DJ Sanghvi College of Engineering** — welcome to my blog!
+If you've stumbled upon this page, you're an absolute fucking legend. I originally created this blog as a digital diary—a place to log my daily updates, look back on my journey, and document everything I've explored and accomplished. (Don't worry, I won't be writing about other people—some things are better kept private.)
 
-None of my content is generated using any form of AI — I only use it to **convert my text into Hugo-compatible code** for formatting.
+Here, you'll find posts about things I find genuinely cool, projects I'm building, random thoughts, and general life updates. It's a raw, unfiltered look at my experiences.
 
-All of my content is uploaded first on a **public GitHub repository**, freely available for anyone to explore or reuse.
+So, if you're ready for the ride, let's get into it.
 
-I know maybe no one will read this,
-but if you did — THANK YOU
+Yeehaw! 🤠

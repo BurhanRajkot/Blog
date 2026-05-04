@@ -47,9 +47,7 @@ canonifyURLs = true
   disableThemeToggle  = false   # keep the theme switcher
   comments           = false    # set true if you later add Disqus/Utterances/etc.
 
-  [params.author]
-    name = "Burhanuddin"
-    email = "burhanuddinrajkotwala11@gmail.com"
+  author = "Burhanuddin"
   # Optional: small text under the title in browser tab (PaperMod label)
   [params.label]
     text = "Noitas"
