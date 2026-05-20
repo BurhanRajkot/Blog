@@ -1,0 +1,7 @@
+{{- $path := .Get 0 -}}
+{{- $content := readFile $path -}}
+{{- with $content -}}
+<div style="width:100%;margin:1.5rem 0;">{{ . | safeHTML }}</div>
+{{- else -}}
+{{- errorf "Chart not found: %s" $path -}}
+{{- end -}}

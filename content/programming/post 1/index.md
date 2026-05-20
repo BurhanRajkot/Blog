@@ -28,7 +28,7 @@ Before touching anything, it helps to understand the underlying architecture.
 
 Everything is connected. Android *is* Linux at the kernel level — it just has Google's stack, the Dalvik/ART runtime, and the Android framework layered on top. When you run Linux on Android, you are running a second Linux userspace alongside Android's own.
 
-![Android and Linux relationship](android-linux-graph.png)
+{{< chart "content/programming/post 1/charts/android-linux-graph.html" >}}
 
 ---
 
@@ -45,11 +45,11 @@ Most people customise their Android. Very few go deep. The four major areas:
 
 Android is a lot like **Windows** in terms of customisation culture — most people change the skin, but nothing at the kernel level. Here is what the actual breakdown looks like:
 
-![How Android users actually customise](customization-pie1.png)
+{{< chart "content/programming/post 1/charts/customization-bar1.html" >}}
 
-And zoomed out to overall mobile OS market share. Then the next pie graph is Android and iOS is 99% and 1% is Graphene OS, Lineage OS, ARCH and Ubuntu, which I've been running on:
+And zoomed out to overall mobile OS market share — Android and iOS dominate at 99%, while alternative OSes like GrapheneOS, LineageOS, Arch, and Ubuntu make up the remaining 1%. I have been running in that 1%.
 
-![Mobile OS market vs alternative Linux](customization-pie2.png)
+{{< chart "content/programming/post 1/charts/customization-bar2.html" >}}
 
 I have been running in that 1%.
 
