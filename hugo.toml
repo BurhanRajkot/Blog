@@ -57,12 +57,13 @@ canonifyURLs = true
 # Profile mode (PaperMod special home layout)
 [params.profileMode]
   enabled      = true
-  title        = "Hi, I'm Burhanuddin"
+  eyebrow      = "Noitas · a personal blog"
+  title        = "Hi, I'm <span class=\"hero-name\">Burhanuddin</span>"
   subtitle     = "I write about programming, game dev, and things going on in my life. Welcome to my blog."
   imageUrl     = "/images/profile.jpg"
   imageTitle   = "Burhanuddin"
-  imageWidth   = 600   # you can tweak this (visual size in profile mode)
-  imageHeight  = 600
+  imageWidth   = 640   # source size; displayed size is set in CSS
+  imageHeight  = 640
 
 # Only these 3 social icons appear globally (profile/footer)
 [[params.socialIcons]]
@@ -74,7 +75,7 @@ canonifyURLs = true
   url  = "https://www.linkedin.com/in/burhanuddin-rajkotwala-84722b326/"
 
 [[params.socialIcons]]
-  name = "gmail"
+  name = "email"
   url  = "mailto:burhanuddinrajkotwala11@gmail.com"
 
 # ------------ Taxonomies ------------

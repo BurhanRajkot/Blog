@@ -1,0 +1,67 @@
+{{- /* Custom home: animated profile hero + latest posts. Overrides PaperMod's index_profile.html */ -}}
+{{- with site.Params.profileMode }}
+<section class="hero" aria-label="Introduction">
+  {{- if .imageUrl }}
+  <div class="hero-avatar" data-tilt>
+    <span class="hero-ring" aria-hidden="true"></span>
+    <span class="hero-glow" aria-hidden="true"></span>
+    <img src="{{ .imageUrl | absURL }}" alt="{{ .imageTitle | default "profile picture" }}"
+      width="{{ .imageWidth | default 160 }}" height="{{ .imageHeight | default 160 }}"
+      draggable="false" decoding="async" fetchpriority="high" />
+    <span class="hero-badge" aria-hidden="true">👋</span>
+  </div>
+  {{- end }}
+
+  {{- with .eyebrow }}
+  <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>{{ . | markdownify }}</p>
+  {{- end }}
+  <h1 class="hero-title">{{ .title | default site.Title | markdownify }}</h1>
+  {{- with .subtitle }}
+  <p class="hero-sub">{{ . | markdownify }}</p>
+  {{- end }}
+
+  {{- partial "social_icons.html" -}}
+
+  <nav class="hero-sections" aria-label="Sections">
+    {{- range site.Params.mainSections }}
+    {{- with site.GetPage (printf "/%s" .) }}
+    {{- $count := len (where .RegularPages "Draft" false) }}
+    <a class="hero-chip" href="{{ .RelPermalink }}">
+      <span>{{ .Title }}</span>
+      <span class="hero-chip-count">{{ $count }}</span>
+    </a>
+    {{- end }}
+    {{- end }}
+  </nav>
+</section>
+{{- end }}
+
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- with first 6 $pages }}
+<section class="latest" aria-labelledby="latest-heading">
+  <div class="latest-head">
+    <h2 id="latest-heading">Latest writing</h2>
+    <span class="latest-rule" aria-hidden="true"></span>
+  </div>
+  <ol class="latest-list">
+    {{- range . }}
+    <li class="latest-item" data-reveal>
+      <a href="{{ .RelPermalink }}">
+        <div class="latest-meta">
+          <span class="latest-section">{{ (site.GetPage .Section).Title | default .Section }}</span>
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date | time.Format ":date_medium" }}</time>
+          {{- if site.Params.showReadingTime }}
+          <span>{{ .ReadingTime }} min read</span>
+          {{- end }}
+        </div>
+        <h3 class="latest-title">{{ .Title }}</h3>
+        {{- with .Description }}
+        <p class="latest-desc">{{ . }}</p>
+        {{- end }}
+        <span class="latest-arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+    {{- end }}
+  </ol>
+</section>
+{{- end }}

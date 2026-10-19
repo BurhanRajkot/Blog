@@ -1,0 +1,76 @@
+{{- /* Site interactions: header state, reading progress, scroll reveal, avatar tilt */ -}}
+{{- if .IsPage }}
+<div class="read-progress" aria-hidden="true"></div>
+{{- end }}
+<script>
+(function () {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Header gets a border/shadow once the page scrolls; progress bar tracks article position
+  var header = document.querySelector('.header');
+  var progress = document.querySelector('.read-progress');
+  var article = document.querySelector('.post-content');
+  var ticking = false;
+
+  function onScroll() {
+    if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
+    if (progress && article) {
+      var rect = article.getBoundingClientRect();
+      var total = rect.height - window.innerHeight;
+      var done = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 1;
+      progress.style.setProperty('--progress', done.toFixed(4));
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+
+  // Fade-up list items as they enter the viewport
+  var targets = document.querySelectorAll('[data-reveal], .post-entry');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('is-visible'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        el.classList.add('is-visible');
+        io.unobserve(el);
+        // Drop the reveal styles afterwards so hover transforms work normally
+        setTimeout(function () {
+          el.removeAttribute('data-reveal');
+          el.classList.remove('is-visible');
+          el.style.removeProperty('--reveal-delay');
+        }, 1100);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    targets.forEach(function (el, i) {
+      el.setAttribute('data-reveal', '');
+      el.style.setProperty('--reveal-delay', Math.min(i, 5) * 0.06 + 's');
+      io.observe(el);
+    });
+  }
+
+  // Gentle 3D tilt on the profile picture, pointer devices only
+  var avatar = document.querySelector('[data-tilt]');
+  if (avatar && !reduceMotion && window.matchMedia('(hover: hover)').matches) {
+    avatar.addEventListener('pointermove', function (e) {
+      var r = avatar.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5;
+      var y = (e.clientY - r.top) / r.height - 0.5;
+      avatar.classList.add('is-tilting');
+      avatar.style.setProperty('--ry', (x * 16).toFixed(2) + 'deg');
+      avatar.style.setProperty('--rx', (-y * 16).toFixed(2) + 'deg');
+    });
+    avatar.addEventListener('pointerleave', function () {
+      avatar.classList.remove('is-tilting');
+      avatar.style.setProperty('--rx', '0deg');
+      avatar.style.setProperty('--ry', '0deg');
+    });
+  }
+})();
+</script>
