@@ -1,0 +1,38 @@
+{{- define "main" }}
+
+{{- if (and site.Params.profileMode.enabled .IsHome) }}
+{{- partial "index_profile.html" . }}
+{{- else }}
+
+<header class="page-header">
+  <h1>{{- if eq .Kind "term" }}<span class="page-header-parent">{{ .Parent.Title }}: </span>{{ end }}{{ .Title }}</h1>
+  {{- with .Description }}
+  <p class="page-description">{{ . | markdownify }}</p>
+  {{- end }}
+</header>
+
+{{- if .Content }}
+<div class="post-content">{{ .Content }}</div>
+{{- end }}
+
+{{- $paginator := .Paginate .RegularPages }}
+{{- with $paginator.Pages }}
+<ol class="entries">
+  {{- range $i, $page := . }}
+  {{- partial "entry-row.html" (dict "page" $page "i" $i "section" (eq $.Kind "term")) }}
+  {{- end }}
+</ol>
+{{- else }}
+<p class="entries-empty">Nothing here yet. In the meantime, the <a href="{{ "" | relURL }}">home page</a> has the latest posts from every section.</p>
+{{- end }}
+
+{{- if gt $paginator.TotalPages 1 }}
+<nav class="pagination" aria-label="Pagination">
+  {{- with $paginator.Prev }}<a class="prev" href="{{ .URL | absURL }}">← Newer</a>{{ end }}
+  <span>Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
+  {{- with $paginator.Next }}<a class="next" href="{{ .URL | absURL }}">Older →</a>{{ end }}
+</nav>
+{{- end }}
+
+{{- end }}
+{{- end }}

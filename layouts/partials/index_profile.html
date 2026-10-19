@@ -1,67 +1,37 @@
-{{- /* Custom home: animated profile hero + latest posts. Overrides PaperMod's index_profile.html */ -}}
-{{- with site.Params.profileMode }}
-<section class="hero" aria-label="Introduction">
-  {{- if .imageUrl }}
-  <div class="hero-avatar" data-tilt>
-    <span class="hero-ring" aria-hidden="true"></span>
-    <span class="hero-glow" aria-hidden="true"></span>
-    <img src="{{ .imageUrl | absURL }}" alt="{{ .imageTitle | default "profile picture" }}"
-      width="{{ .imageWidth | default 160 }}" height="{{ .imageHeight | default 160 }}"
-      draggable="false" decoding="async" fetchpriority="high" />
-    <span class="hero-badge" aria-hidden="true">👋</span>
+{{- /* Home: split hero (intro left, photo right) and latest posts. Overrides PaperMod's index_profile.html */ -}}
+{{- $p := site.Params.profileMode }}
+{{- $pages := (where site.RegularPages "Section" "in" site.Params.mainSections).ByDate.Reverse }}
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <h1 id="hero-title" class="hero-title">{{ $p.title | default site.Title }}</h1>
+    {{- with $p.subtitle }}
+    <p class="hero-sub">{{ . | markdownify }}</p>
+    {{- end }}
+    <ul class="hero-links">
+      {{- $labels := dict "github" "GitHub" "linkedin" "LinkedIn" "email" "Email" "x" "X" "twitter" "Twitter" }}
+      {{- range site.Params.socialIcons }}
+      <li><a href="{{ .url }}" {{ if not (hasPrefix .url "mailto:") }}target="_blank" rel="noopener"{{ end }}>{{ index $labels .name | default (humanize .name) }}</a></li>
+      {{- end }}
+    </ul>
   </div>
+  {{- with $p.imageUrl }}
+  <figure class="hero-photo">
+    <img src="{{ . | absURL }}" alt="{{ $p.imageTitle | default "Portrait" }}"
+      width="{{ $p.imageWidth | default 720 }}" height="{{ $p.imageHeight | default 900 }}" decoding="async" fetchpriority="high">
+  </figure>
   {{- end }}
-
-  {{- with .eyebrow }}
-  <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>{{ . | markdownify }}</p>
-  {{- end }}
-  <h1 class="hero-title">{{ .title | default site.Title | markdownify }}</h1>
-  {{- with .subtitle }}
-  <p class="hero-sub">{{ . | markdownify }}</p>
-  {{- end }}
-
-  {{- partial "social_icons.html" -}}
-
-  <nav class="hero-sections" aria-label="Sections">
-    {{- range site.Params.mainSections }}
-    {{- with site.GetPage (printf "/%s" .) }}
-    {{- $count := len (where .RegularPages "Draft" false) }}
-    <a class="hero-chip" href="{{ .RelPermalink }}">
-      <span>{{ .Title }}</span>
-      <span class="hero-chip-count">{{ $count }}</span>
-    </a>
-    {{- end }}
-    {{- end }}
-  </nav>
 </section>
-{{- end }}
 
-{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
-{{- with first 6 $pages }}
-<section class="latest" aria-labelledby="latest-heading">
-  <div class="latest-head">
-    <h2 id="latest-heading">Latest writing</h2>
-    <span class="latest-rule" aria-hidden="true"></span>
-  </div>
-  <ol class="latest-list">
-    {{- range . }}
-    <li class="latest-item" data-reveal>
-      <a href="{{ .RelPermalink }}">
-        <div class="latest-meta">
-          <span class="latest-section">{{ (site.GetPage .Section).Title | default .Section }}</span>
-          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date | time.Format ":date_medium" }}</time>
-          {{- if site.Params.showReadingTime }}
-          <span>{{ .ReadingTime }} min read</span>
-          {{- end }}
-        </div>
-        <h3 class="latest-title">{{ .Title }}</h3>
-        {{- with .Description }}
-        <p class="latest-desc">{{ . }}</p>
-        {{- end }}
-        <span class="latest-arrow" aria-hidden="true">→</span>
-      </a>
-    </li>
+<section class="latest" aria-labelledby="latest-title">
+  <h2 id="latest-title" class="latest-title">Latest writing</h2>
+  {{- with $pages }}
+  <ol class="entries">
+    {{- range $i, $page := first 5 . }}
+    {{- partial "entry-row.html" (dict "page" $page "i" $i "h" 3 "section" true) }}
     {{- end }}
   </ol>
+  {{- else }}
+  <p class="entries-empty">Nothing published yet. The first post is on its way.</p>
+  {{- end }}
 </section>
-{{- end }}

@@ -1,0 +1,18 @@
+{{- /* One post in a list. Context: dict "page", "i" (position, drives the load-in stagger), optional "h" (heading level), optional "section" (show section name) */ -}}
+{{- $p := .page }}
+{{- $h := .h | default 2 }}
+<li class="entry" style="--i: {{ .i }}">
+  <a class="entry-link-row" href="{{ $p.RelPermalink }}">
+    {{ printf "<h%d class=\"entry-title\">" $h | safeHTML }}{{ $p.Title }}{{ printf "</h%d>" $h | safeHTML }}
+    {{- with $p.Description }}
+    <p class="entry-desc">{{ . }}</p>
+    {{- end }}
+    <p class="entry-meta">
+      {{- if .section }}
+      <span class="entry-section">{{ with site.GetPage $p.Section }}{{ .Title }}{{ end }}</span>
+      {{- end }}
+      <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "2 January 2006" }}</time>
+      <span>{{ $p.ReadingTime }} min read</span>
+    </p>
+  </a>
+</li>

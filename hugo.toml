@@ -42,7 +42,7 @@ canonifyURLs = true
   mainSections      = ["programming", "gamedev", "books", "mylife"]
 
   # Nice UX bits
-  ShowBreadCrumbs   = true
+  ShowBreadCrumbs   = false   # section shows in the post meta instead
   ShowCodeCopyButtons = true
   disableThemeToggle  = false   # keep the theme switcher
   comments           = false    # set true if you later add Disqus/Utterances/etc.
@@ -57,13 +57,12 @@ canonifyURLs = true
 # Profile mode (PaperMod special home layout)
 [params.profileMode]
   enabled      = true
-  eyebrow      = "Noitas · a personal blog"
-  title        = "Hi, I'm <span class=\"hero-name\">Burhanuddin</span>"
+  title        = "Hi, I'm Burhanuddin"
   subtitle     = "I write about programming, game dev, and things going on in my life. Welcome to my blog."
   imageUrl     = "/images/profile.jpg"
-  imageTitle   = "Burhanuddin"
-  imageWidth   = 640   # source size; displayed size is set in CSS
-  imageHeight  = 640
+  imageTitle   = "Burhanuddin in front of a bookshelf"
+  imageWidth   = 720
+  imageHeight  = 900
 
 # Only these 3 social icons appear globally (profile/footer)
 [[params.socialIcons]]
