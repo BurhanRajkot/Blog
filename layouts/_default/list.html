@@ -4,8 +4,16 @@
 {{- partial "index_profile.html" . }}
 {{- else }}
 
-<header class="page-header">
-  <h1>{{- if eq .Kind "term" }}<span class="page-header-parent">{{ .Parent.Title }}: </span>{{ end }}{{ .Title }}</h1>
+{{- $worldNo := 0 }}
+{{- range $i, $s := site.Params.mainSections }}{{ if and (eq $.Kind "section") (eq $s $.Section) }}{{ $worldNo = add $i 1 }}{{ end }}{{ end }}
+
+<header class="page-header world-banner pixel-box" {{ if $worldNo }}data-world="{{ .Section }}"{{ end }}>
+  {{- if $worldNo }}
+  <p class="world-no">World {{ $worldNo }}</p>
+  {{- else if eq .Kind "term" }}
+  <p class="world-no">{{ .Parent.Title }}</p>
+  {{- end }}
+  <h1>{{ .Title }}</h1>
   {{- with .Description }}
   <p class="page-description">{{ . | markdownify }}</p>
   {{- end }}
@@ -17,20 +25,23 @@
 
 {{- $paginator := .Paginate .RegularPages }}
 {{- with $paginator.Pages }}
-<ol class="entries">
+<ol class="slots">
   {{- range $i, $page := . }}
   {{- partial "entry-row.html" (dict "page" $page "i" $i "section" (eq $.Kind "term")) }}
   {{- end }}
 </ol>
 {{- else }}
-<p class="entries-empty">Nothing here yet. In the meantime, the <a href="{{ "" | relURL }}">home page</a> has the latest posts from every section.</p>
+<div class="empty-world pixel-box">
+  <p class="empty-world-title">No saves here yet</p>
+  <p>This world is still being built. Head back to the <a href="{{ "" | relURL }}">title screen</a> to pick another one.</p>
+</div>
 {{- end }}
 
 {{- if gt $paginator.TotalPages 1 }}
 <nav class="pagination" aria-label="Pagination">
-  {{- with $paginator.Prev }}<a class="prev" href="{{ .URL | absURL }}">← Newer</a>{{ end }}
+  {{- with $paginator.Prev }}<a class="btn prev" href="{{ .URL | absURL }}">◀ Newer</a>{{ end }}
   <span>Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
-  {{- with $paginator.Next }}<a class="next" href="{{ .URL | absURL }}">Older →</a>{{ end }}
+  {{- with $paginator.Next }}<a class="btn next" href="{{ .URL | absURL }}">Older ▶</a>{{ end }}
 </nav>
 {{- end }}
 

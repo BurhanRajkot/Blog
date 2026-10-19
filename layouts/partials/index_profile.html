@@ -1,37 +1,81 @@
-{{- /* Home: split hero (intro left, photo right) and latest posts. Overrides PaperMod's index_profile.html */ -}}
+{{- /* Home as a game title screen: logo, player card, world select, save slots. Overrides PaperMod's index_profile.html */ -}}
 {{- $p := site.Params.profileMode }}
 {{- $pages := (where site.RegularPages "Section" "in" site.Params.mainSections).ByDate.Reverse }}
 
-<section class="hero" aria-labelledby="hero-title">
-  <div class="hero-text">
-    <h1 id="hero-title" class="hero-title">{{ $p.title | default site.Title }}</h1>
-    {{- with $p.subtitle }}
-    <p class="hero-sub">{{ . | markdownify }}</p>
-    {{- end }}
-    <ul class="hero-links">
-      {{- $labels := dict "github" "GitHub" "linkedin" "LinkedIn" "email" "Email" "x" "X" "twitter" "Twitter" }}
-      {{- range site.Params.socialIcons }}
-      <li><a href="{{ .url }}" {{ if not (hasPrefix .url "mailto:") }}target="_blank" rel="noopener"{{ end }}>{{ index $labels .name | default (humanize .name) }}</a></li>
+{{- /* Real stats: XP is total words written; every 1,000 XP is a level */ -}}
+{{- $xp := 0 }}
+{{- range $pages }}{{ $xp = add $xp .WordCount }}{{ end }}
+{{- $lvl := add (div $xp 1000) 1 }}
+{{- $into := mod $xp 1000 }}
+{{- $filled := div $into 100 }}
+
+<section class="title-screen" aria-labelledby="game-title">
+  <h1 id="game-title" class="game-title" data-text="{{ site.Title }}">{{ site.Title }}</h1>
+  <a class="press-start" href="#saves">Press start</a>
+
+  <div class="player pixel-box">
+    <button class="portrait" type="button" aria-pressed="false" aria-label="Show the real photo">
+      <img class="portrait-pixel" src="{{ "images/profile-pixel.png" | absURL }}" alt="" width="64" height="80">
+      <img class="portrait-real" src="{{ $p.imageUrl | absURL }}" alt="{{ $p.imageTitle | default "Portrait" }}" width="{{ $p.imageWidth | default 720 }}" height="{{ $p.imageHeight | default 900 }}" loading="lazy" decoding="async">
+    </button>
+
+    <div class="player-info">
+      <dl class="stats">
+        <div><dt>Player</dt><dd>{{ $p.playerName | default site.Params.author }}</dd></div>
+        {{- with $p.playerClass }}<div><dt>Class</dt><dd>{{ . }}</dd></div>{{ end }}
+        <div><dt>Level</dt><dd>{{ $lvl }}</dd></div>
+        <div class="stat-xp">
+          <dt>XP</dt>
+          <dd>
+            <span class="xp-bar" role="img" aria-label="{{ $into }} of 1,000 XP toward level {{ add $lvl 1 }}">
+              {{- range seq 10 }}<i{{ if le . $filled }} class="on"{{ end }}></i>{{ end -}}
+            </span>
+            <span class="xp-note">{{ lang.FormatNumber 0 $xp }} words written, {{ lang.FormatNumber 0 (sub 1000 $into) }} to next level</span>
+          </dd>
+        </div>
+      </dl>
+      {{- with $p.subtitle }}
+      <p class="player-bio">{{ . | markdownify }}</p>
       {{- end }}
-    </ul>
+      <ul class="player-links">
+        {{- $labels := dict "github" "GitHub" "linkedin" "LinkedIn" "email" "Email" "x" "X" "twitter" "Twitter" }}
+        {{- range site.Params.socialIcons }}
+        <li><a class="btn" href="{{ .url }}" {{ if not (hasPrefix .url "mailto:") }}target="_blank" rel="noopener"{{ end }}>{{ index $labels .name | default (humanize .name) }}</a></li>
+        {{- end }}
+      </ul>
+    </div>
   </div>
-  {{- with $p.imageUrl }}
-  <figure class="hero-photo">
-    <img src="{{ . | absURL }}" alt="{{ $p.imageTitle | default "Portrait" }}"
-      width="{{ $p.imageWidth | default 720 }}" height="{{ $p.imageHeight | default 900 }}" decoding="async" fetchpriority="high">
-  </figure>
-  {{- end }}
 </section>
 
-<section class="latest" aria-labelledby="latest-title">
-  <h2 id="latest-title" class="latest-title">Latest writing</h2>
-  {{- with $pages }}
-  <ol class="entries">
-    {{- range $i, $page := first 5 . }}
-    {{- partial "entry-row.html" (dict "page" $page "i" $i "h" 3 "section" true) }}
+<section class="worlds" aria-labelledby="worlds-title">
+  <h2 id="worlds-title" class="screen-heading">Select world</h2>
+  <ol class="world-grid">
+    {{- range $i, $s := site.Params.mainSections }}
+    {{- with site.GetPage (printf "/%s" $s) }}
+    {{- $n := len .RegularPages }}
+    <li class="world{{ if not $n }} world-locked{{ end }}" data-world="{{ $s }}" style="--i: {{ $i }}">
+      <a href="{{ .RelPermalink }}">
+        <span class="world-no">World {{ add $i 1 }}</span>
+        <span class="world-name">{{ .Title }}</span>
+        <span class="world-count">{{ if $n }}{{ $n }} {{ cond (eq $n 1) "save" "saves" }}{{ else }}Coming soon{{ end }}</span>
+      </a>
+    </li>
+    {{- end }}
     {{- end }}
   </ol>
-  {{- else }}
-  <p class="entries-empty">Nothing published yet. The first post is on its way.</p>
-  {{- end }}
+</section>
+
+<section class="saves" id="saves" aria-labelledby="saves-title">
+  <h2 id="saves-title" class="screen-heading">Load game</h2>
+  <ol class="slots">
+    {{- range $i, $page := first 5 $pages }}
+    {{- partial "entry-row.html" (dict "page" $page "i" $i "h" 3 "section" true) }}
+    {{- end }}
+    {{- /* Pad to three slots so a young blog still reads as a save menu */ -}}
+    {{- if lt (len $pages) 3 }}
+    {{- range seq (len $pages | add 1) 3 }}
+    <li class="slot slot-empty" style="--i: {{ . }}"><span class="slot-no">Slot {{ . }}</span><span class="slot-empty-label">Empty</span></li>
+    {{- end }}
+    {{- end }}
+  </ol>
 </section>

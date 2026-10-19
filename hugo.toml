@@ -58,6 +58,8 @@ canonifyURLs = true
 [params.profileMode]
   enabled      = true
   title        = "Hi, I'm Burhanuddin"
+  playerName   = "Burhanuddin"
+  playerClass  = "Dev / Gamer / Reader"
   subtitle     = "I write about programming, game dev, and things going on in my life. Welcome to my blog."
   imageUrl     = "/images/profile.jpg"
   imageTitle   = "Burhanuddin in front of a bookshelf"
