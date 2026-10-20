@@ -1,0 +1,11 @@
+{{- /* Search index. Secret levels (price set) are searchable by title and description only */ -}}
+{{- $index := slice -}}
+{{- range site.RegularPages -}}
+  {{- if and (not .Params.searchHidden) (ne .Layout `archives`) (ne .Layout `search`) }}
+  {{- $locked := gt (int (.Params.price | default 0)) 0 }}
+  {{- $content := cond $locked (.Description | default "") .Plain }}
+  {{- $summary := cond $locked (.Description | default "") .Summary }}
+  {{- $index = $index | append (dict "title" .Title "content" $content "permalink" .Permalink "summary" $summary) -}}
+  {{- end }}
+{{- end -}}
+{{- $index | jsonify -}}

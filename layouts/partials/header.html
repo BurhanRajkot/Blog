@@ -1,47 +1,40 @@
-{{- $current := . }}
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="wordmark" href="{{ "" | relURL }}" aria-label="{{ site.Title }}, home">
-      <span class="wordmark-mark" aria-hidden="true"></span>
-      <span class="wordmark-text">{{ site.Title }}</span>
-    </a>
-
-    <nav class="site-nav" aria-label="Main">
-      <ul>
-        {{- range site.Menus.main }}
-        {{- if ne .URL "/" }}
-        {{- $active := or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) (and $current.Section (eq (printf "/%s/" $current.Section) .URL)) }}
-        <li><a href="{{ .URL | relURL }}"{{ if $active }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
-        {{- end }}
-        {{- end }}
-      </ul>
-    </nav>
-
-    <div class="header-tools">
-      <a class="icon-btn" href="{{ "search/" | relURL }}" aria-label="Search">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+{{- /* HUD bar. Overrides PaperMod's header but keeps its ids/classes so the theme's scripts still work */ -}}
+<header class="header">
+  <nav class="nav">
+    <div class="logo">
+      <a href="{{ "" | absLangURL }}" accesskey="h" title="{{ site.Title }} (Alt + H)">
+        <img class="logo-sprite" src="{{ "sprites/coin.svg" | absURL }}" alt="" width="16" height="16">{{ site.Title -}}
       </a>
-      <button class="icon-btn theme-toggle" type="button" aria-label="Switch colour theme">
-        <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
-        <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>
+    </div>
+    {{- $currentPage := . }}
+    <ul id="menu">
+      {{- range site.Menus.main }}
+      {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absLangURL }}
+      {{- $page_url := $currentPage.Permalink | absLangURL }}
+      {{- $active := or (eq $menu_item_url $page_url) (and $currentPage.Section (ne .URL "/") (eq (printf "/%s/" $currentPage.Section) .URL)) }}
+      <li>
+        <a href="{{ .URL | absLangURL }}" title="{{ .Name }}">
+          <span{{ if $active }} class="active"{{ end }}>{{ .Name }}</span>
+        </a>
+      </li>
+      {{- end }}
+    </ul>
+    <div class="logo-switches">
+      <a class="wallet" href="{{ "shop/" | relURL }}" title="Your coins. Spend them in the item shop">
+        <img src="{{ "sprites/coin.svg" | absURL }}" alt="" width="16" height="16"><b class="wallet-n">0</b><span class="visually-hidden"> coins, open the item shop</span>
+      </a>
+      <button id="theme-toggle" accesskey="t" title="Day / night (Alt + T)" aria-label="Switch between day and night">
+        <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
       </button>
-      <button class="icon-btn menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
-        <span></span><span></span>
+      <button class="hud-btn sound-toggle" type="button" aria-pressed="false" title="Sound effects">
+        <i class="px-icon i-sound-off" aria-hidden="true"></i><i class="px-icon i-sound-on" aria-hidden="true"></i>
+        <span class="visually-hidden">Sound effects</span>
+      </button>
+      <button class="hud-btn pause-btn" type="button" title="Pause menu (Esc)" aria-haspopup="dialog">
+        <i class="px-icon i-pause" aria-hidden="true"></i>
+        <span class="pause-label"><span class="pl-desk">Pause</span><span class="pl-mob">Menu</span></span>
       </button>
     </div>
-  </div>
-
-
-  {{- if .IsPage }}
-  <div class="read-progress" aria-hidden="true"><span></span></div>
-  {{- end }}
+  </nav>
 </header>
-
-{{- /* Outside the header: its backdrop-filter would trap a fixed overlay */}}
-<nav class="mobile-nav" id="mobile-nav" aria-label="Main" hidden>
-  <ol>
-    {{- range $i, $m := site.Menus.main }}
-    <li style="--i: {{ $i }}"><a href="{{ $m.URL | relURL }}"><span class="mono">0{{ add $i 1 }}</span>{{ $m.Name }}</a></li>
-    {{- end }}
-  </ol>
-</nav>

@@ -1,0 +1,13 @@
+{{- /* Self-hosted fonts: Pixelify Sans (OFL), Atkinson Hyperlegible Next (OFL, see static/fonts/AtkinsonHyperlegibleNext-LICENSE.txt), JetBrains Mono (OFL) */ -}}
+<link rel="preload" href="{{ "fonts/pixelify-sans-latin-wght-normal.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="{{ "sprites/coin.svg" | absURL }}" type="image/svg+xml">
+<script>
+  // Before first paint: CRT filter and the palette bought in the shop
+  try {
+    var h = document.documentElement;
+    if (localStorage.getItem('crt') === '1') h.classList.add('crt');
+    var eq = JSON.parse(localStorage.getItem('noitas:equipped') || '{}');
+    if (eq.palette && eq.palette !== 'pico') h.classList.add('pal-' + eq.palette);
+  } catch (e) {}
+</script>

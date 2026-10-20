@@ -1,0 +1,29 @@
+{{- /* A post as a save slot. Context: dict "page", "i" (position), optional "h" (heading level), optional "section" (show world name).
+       Posts with a `price` in front matter are secret levels: locked until bought with coins. */ -}}
+{{- $p := .page }}
+{{- $h := .h | default 2 }}
+{{- $price := int ($p.Params.price | default 0) }}
+<li class="slot{{ if $price }} slot-locked{{ end }}" data-world="{{ $p.Section }}" data-path="{{ $p.RelPermalink }}" style="--i: {{ .i }}">
+  <a href="{{ $p.RelPermalink }}">
+    <span class="slot-no">{{ if $price }}Secret{{ else }}Slot {{ add .i 1 }}{{ end }}</span>
+    <span class="slot-main">
+      {{ printf "<h%d class=\"slot-title\">" $h | safeHTML }}{{ $p.Title }}{{ printf "</h%d>" $h | safeHTML }}
+      {{- with $p.Description }}
+      <span class="slot-desc">{{ . }}</span>
+      {{- end }}
+    </span>
+    <span class="slot-meta">
+      {{- if .section }}
+      <span class="world-tag">{{ with site.GetPage $p.Section }}{{ .Title }}{{ end }}</span>
+      {{- end }}
+      {{- if $price }}
+      <span class="slot-price"><img src="{{ "sprites/lock.svg" | absURL }}" alt="" width="12" height="12"> {{ $price }} coins</span>
+      <span class="slot-unlocked">Unlocked</span>
+      {{- else }}
+      <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "2 Jan 2006" }}</time>
+      {{- end }}
+      <span>Playtime {{ $p.ReadingTime }} min</span>
+      <span class="slot-cleared" hidden>★ Cleared</span>
+    </span>
+  </a>
+</li>

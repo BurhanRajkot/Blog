@@ -1,0 +1,52 @@
+{{- /* Reading bar, toast, pause menu, and the scripts that run the game layer */ -}}
+{{- if .IsPage }}
+<div class="read-progress" aria-hidden="true"></div>
+{{- end }}
+<div class="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog class="pause-menu" aria-labelledby="pause-title">
+  <div class="pm-screen" data-screen="main">
+    <h2 id="pause-title" class="pm-title">Paused</h2>
+    <ul class="pm-list">
+      <li><button type="button" data-act="resume">Resume</button></li>
+      <li><a href="{{ "" | relURL }}">Title screen</a></li>
+      {{- with site.GetPage "/shop" }}<li><a href="{{ .RelPermalink }}">Item shop</a></li>{{ end }}
+      <li><button type="button" data-act="screen" data-to="worlds">Select world</button></li>
+      <li><button type="button" data-act="screen" data-to="trophies">Trophies <span class="pm-val pm-trophies">0/0</span></button></li>
+      <li><button type="button" data-act="sound">Sound <span class="pm-val pm-sound">Off</span></button></li>
+      <li><button type="button" data-act="crt">CRT filter <span class="pm-val pm-crt">Off</span></button></li>
+      <li><button type="button" data-act="theme">Time of day <span class="pm-val pm-theme">Night</span></button></li>
+    </ul>
+    <p class="pm-hint">↑ ↓ move · Enter select · Esc resume</p>
+  </div>
+
+  <div class="pm-screen" data-screen="worlds" hidden>
+    <h2 class="pm-title">Select world</h2>
+    <ul class="pm-list">
+      {{- range $i, $s := site.Params.mainSections }}
+      {{- with site.GetPage (printf "/%s" $s) }}
+      <li><a href="{{ .RelPermalink }}" data-world="{{ $s }}"><img src="{{ printf "sprites/%s.svg" $s | absURL }}" alt="" width="16" height="16"> {{ .Title }}</a></li>
+      {{- end }}
+      {{- end }}
+      {{- with site.GetPage "/about" }}<li><a href="{{ .RelPermalink }}">About the player</a></li>{{ end }}
+      <li><button type="button" data-act="screen" data-to="main">◀ Back</button></li>
+    </ul>
+  </div>
+
+  <div class="pm-screen" data-screen="trophies" hidden>
+    <h2 class="pm-title">Trophies</h2>
+    <ul class="trophy-list"></ul>
+    <ul class="pm-list">
+      <li><button type="button" data-act="screen" data-to="main">◀ Back</button></li>
+    </ul>
+  </div>
+</dialog>
+
+{{- with resources.Get "js/game.js" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" data-sprites="{{ "sprites/" | absURL }}" defer></script>
+{{- end }}
+{{- if or .IsHome (eq .Kind "404") }}
+{{- with resources.Get "js/scene.js" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
+{{- end }}

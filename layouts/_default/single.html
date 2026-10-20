@@ -1,70 +1,70 @@
+{{- /* PaperMod's single page, plus secret levels: a post with `price` in front matter stays
+       behind a vault door until the reader buys it with coins earned around the site.
+       The content ships encoded, so it isn't readable at a glance or indexed; it's a game, not DRM. */ -}}
 {{- define "main" }}
-{{- $avatar := "" }}
-{{- with resources.Get site.Params.profileMode.imageUrl }}{{ $avatar = .Fill "120x120 Bottom webp q85" }}{{ end }}
-{{- $section := site.GetPage .Section }}
+{{- $price := int (.Params.price | default 0) }}
 
-<article class="post">
-  <header class="post-head">
-    <p class="post-kicker mono">
-      {{- with $section }}<a href="{{ .RelPermalink }}"><span aria-hidden="true">←</span> {{ .Title }}</a>{{ end }}
-      <span class="sep" aria-hidden="true"></span>
-      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
-      <span>{{ .ReadingTime }} min read</span>
-      {{- if .Draft }}<span class="tag">Draft</span>{{ end }}
-    </p>
-    <h1 class="post-title" style="view-transition-name: {{ partial "vt-name.html" . }}">{{ .Title }}</h1>
-    {{- with .Description }}
-    <p class="post-lede">{{ . }}</p>
-    {{- end }}
-    <div class="byline">
-      {{- with $avatar }}<img src="{{ .RelPermalink }}" width="60" height="60" alt="">{{ end }}
-      <p><span>Written by</span> <a href="{{ "about/" | relURL }}">{{ site.Params.author }}</a></p>
+<article class="post-single{{ if $price }} is-secret{{ end }}">
+  <header class="post-header">
+    <h1 class="post-title entry-hint-parent">
+      {{ .Title }}
+      {{- if .Draft }}<span class="entry-hint" title="Draft">Draft</span>{{ end }}
+    </h1>
+    {{- if .Description }}
+    <div class="post-description">
+      {{ .Description }}
     </div>
+    {{- end }}
+    {{- if not (.Param "hideMeta") }}
+    <div class="post-meta">
+      {{- partial "post_meta.html" . -}}
+      {{- if $price }}<span class="secret-chip"><img src="{{ "sprites/lock.svg" | absURL }}" alt="" width="12" height="12"> Secret level</span>{{ end }}
+    </div>
+    {{- end }}
   </header>
 
-  {{- if and (.Param "ShowToc") (gt (len (findRE "<li" .TableOfContents)) 2) }}
-  <details class="toc wrap-text">
-    <summary class="mono">In this entry</summary>
-    {{ .TableOfContents }}
-  </details>
+  {{- if and (not $price) (.Param "ShowToc") }}
+  {{- partial "toc.html" . }}
   {{- end }}
 
-  <div class="prose post-body">
-    {{- partial "anchored_headings.html" .Content }}
+  {{- if $price }}
+  <section class="vault pixel-box" data-path="{{ .RelPermalink }}" data-price="{{ $price }}" data-payload="{{ partial "anchored_headings.html" .Content | base64Encode }}" aria-labelledby="vault-title">
+    <img class="vault-lock" src="{{ "sprites/lock.svg" | absURL }}" alt="" width="40" height="40">
+    <h2 id="vault-title" class="vault-title">Secret level</h2>
+    <p class="vault-text">This one isn't out in the open yet. Spend <b>{{ $price }} coins</b> to unlock it in this browser.</p>
+    <button class="btn btn-primary vault-buy" type="button">
+      <img src="{{ "sprites/coin.svg" | absURL }}" alt="" width="16" height="16"> Unlock for {{ $price }}
+    </button>
+    <p class="vault-need" aria-live="polite">Turn on JavaScript to play for coins.</p>
+    <p class="vault-earn">Earn coins by playing the runner on the <a href="{{ "" | relURL }}">title screen</a>, reading posts to the end, unlocking trophies, and coming back each day.</p>
+  </section>
+  <div class="post-content" hidden></div>
+  {{- else }}
+  {{- if .Content }}
+  <div class="post-content">
+    {{- partial "anchored_headings.html" .Content -}}
   </div>
+  {{- end }}
+  {{- end }}
 
-  <footer class="post-foot">
-    <div class="signoff">
-      {{- with $avatar }}<img src="{{ .RelPermalink }}" width="60" height="60" alt="">{{ end }}
-      <div>
-        <p class="signoff-line">Thanks for reading.</p>
-        <p class="signoff-name">{{ site.Params.author }}</p>
-      </div>
+  <footer class="post-footer">
+    <div class="level-end">
+      <img src="{{ "sprites/trophy.svg" | absURL }}" alt="" width="24" height="22">
+      <p><b>End of level.</b> Thanks for playing. Reaching here pays out coins the first time.</p>
     </div>
-
-    {{- with .GetTerms "tags" }}
-    <ul class="tags" aria-label="Tags">
-      {{- range . }}<li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>{{ end }}
+    {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
+    <ul class="post-tags">
+      {{- range ($.GetTerms $tags) }}
+      <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+      {{- end }}
     </ul>
+    {{- if (.Param "ShowPostNavLinks") }}
+    {{- partial "post_nav_links.html" . }}
+    {{- end }}
+    {{- if (and site.Params.ShowShareButtons (ne .Params.disableShare true)) }}
+    {{- partial "share_icons.html" . -}}
     {{- end }}
   </footer>
-
-  {{- $prev := .PrevInSection }}{{ $next := .NextInSection }}
-  {{- if or $prev $next }}
-  <nav class="post-nav wrap" aria-label="More in {{ with $section }}{{ .Title }}{{ end }}">
-    {{- with $next }}
-    <a class="post-nav-link" href="{{ .RelPermalink }}">
-      <span class="mono">← Newer</span>
-      <span class="post-nav-title">{{ .Title }}</span>
-    </a>
-    {{- else }}<span></span>{{ end }}
-    {{- with $prev }}
-    <a class="post-nav-link is-next" href="{{ .RelPermalink }}">
-      <span class="mono">Older →</span>
-      <span class="post-nav-title">{{ .Title }}</span>
-    </a>
-    {{- end }}
-  </nav>
-  {{- end }}
 </article>
+
 {{- end }}

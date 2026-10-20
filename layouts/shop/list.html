@@ -1,0 +1,73 @@
+{{- /* Item shop: spend coins on secret levels (posts with `price`), runner skins, power-ups and palettes.
+       Skins, power-ups and palettes are listed in assets/js/sprites.js and drawn by game.js. */ -}}
+{{- define "main" }}
+{{- $secrets := where site.RegularPages ".Params.price" "gt" 0 }}
+
+<header class="page-header world-banner pixel-box shop-banner">
+  <p class="world-no">Shopkeeper says</p>
+  <h1>{{ .Title }}</h1>
+  <p class="page-description dialogue">{{ .Description }}</p>
+  <p class="shop-wallet"><span>Your coins</span> <img src="{{ "sprites/coin.svg" | absURL }}" alt="" width="24" height="24"><b class="wallet-n">0</b></p>
+</header>
+
+<div class="shop">
+  <section class="shop-section" aria-labelledby="sec-secrets">
+    <h2 id="sec-secrets" class="screen-heading">Secret levels</h2>
+    <p class="shop-note">Posts that aren't out in the open yet. Buy one and it stays unlocked in this browser.</p>
+    {{- with $secrets }}
+    <ul class="shop-grid shop-secrets">
+      {{- range . }}
+      {{- $price := int .Params.price }}
+      <li class="shop-item secret-item" data-world="{{ .Section }}" data-path="{{ .RelPermalink }}" data-price="{{ $price }}">
+        <div class="item-stage">
+          <img class="item-sprite" src="{{ printf "sprites/%s.svg" .Section | absURL }}" alt="" width="48" height="48">
+          <img class="item-lock" src="{{ "sprites/lock.svg" | absURL }}" alt="" width="20" height="20">
+        </div>
+        <div class="item-info">
+          <h3 class="item-name">{{ .Title }}</h3>
+          <p class="item-blurb">{{ .Description | default (.Summary | plainify | truncate 120) }}</p>
+          <p class="item-meta">{{ with site.GetPage .Section }}{{ .Title }}{{ end }} · Playtime {{ .ReadingTime }} min</p>
+        </div>
+        <button class="btn item-btn" type="button" aria-label="Unlock {{ .Title }} for {{ $price }} coins">
+          <img src="{{ "sprites/coin.svg" | absURL }}" alt="" width="14" height="14"> {{ $price }}
+        </button>
+      </li>
+      {{- end }}
+    </ul>
+    {{- else }}
+    <div class="empty-world pixel-box"><p class="empty-world-title">Shelves are empty</p><p>No secret levels right now. New ones show up here first.</p></div>
+    {{- end }}
+  </section>
+
+  <section class="shop-section" aria-labelledby="sec-skins">
+    <h2 id="sec-skins" class="screen-heading">Runner skins</h2>
+    <p class="shop-note">Change how your hero looks in the runner on the title screen.</p>
+    <ul class="shop-grid shop-skins"></ul>
+  </section>
+
+  <section class="shop-section" aria-labelledby="sec-powers">
+    <h2 id="sec-powers" class="screen-heading">Power-ups</h2>
+    <p class="shop-note">Permanent upgrades for every run.</p>
+    <ul class="shop-grid shop-powers"></ul>
+  </section>
+
+  <section class="shop-section" aria-labelledby="sec-palettes">
+    <h2 id="sec-palettes" class="screen-heading">Palettes</h2>
+    <p class="shop-note">Recolour the whole site.</p>
+    <ul class="shop-grid shop-palettes"></ul>
+  </section>
+
+  <section class="shop-section earn" aria-labelledby="sec-earn">
+    <h2 id="sec-earn" class="screen-heading">How to earn coins</h2>
+    <ul class="earn-list">
+      <li><b>+1</b><span>Every coin you grab in the runner on the <a href="{{ "" | relURL }}">title screen</a></span></li>
+      <li><b>+1 / 100</b><span>Score bonus paid out at game over</span></li>
+      <li><b>+25</b><span>Clearing a level: read a post to the end</span></li>
+      <li><b>+10</b><span>Every trophy you unlock (Esc opens the list)</span></li>
+      <li><b>+5</b><span>Daily bonus for coming back</span></li>
+    </ul>
+  </section>
+
+  <noscript><p class="shop-note">The shop needs JavaScript. Everything else on the site works without it.</p></noscript>
+</div>
+{{- end }}

@@ -1,0 +1,18 @@
+{{- /* Previous / next level. Overrides PaperMod (which labels with the file name) */ -}}
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- if and (gt (len $pages) 1) (in $pages . ) }}
+<nav class="paginav" aria-label="More levels">
+  {{- with $pages.Next . }}
+  <a class="prev" href="{{ .Permalink }}">
+    <span class="title">◀ Newer level</span>
+    <span>{{ .Title }}{{ if .Params.price }} <img src="{{ "sprites/lock.svg" | absURL }}" alt="(secret)" width="10" height="10">{{ end }}</span>
+  </a>
+  {{- end }}
+  {{- with $pages.Prev . }}
+  <a class="next" href="{{ .Permalink }}">
+    <span class="title">Older level ▶</span>
+    <span>{{ .Title }}{{ if .Params.price }} <img src="{{ "sprites/lock.svg" | absURL }}" alt="(secret)" width="10" height="10">{{ end }}</span>
+  </a>
+  {{- end }}
+</nav>
+{{- end }}

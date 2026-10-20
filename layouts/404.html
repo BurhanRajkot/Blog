@@ -1,8 +1,17 @@
 {{- define "main" }}
-<section class="lost wrap">
-  <p class="eyebrow">Error 404</p>
-  <h1 class="lost-title">Lost the <em>plot.</em></h1>
-  <p class="page-lede">This page doesn't exist. The link might be wrong, or the entry moved somewhere else.</p>
-  <a class="btn" href="{{ "" | relURL }}">Back to the beginning</a>
+<section class="game-over" aria-labelledby="go-title">
+  <div class="scene" aria-hidden="true"><canvas></canvas></div>
+  <div class="game-hud" aria-hidden="true">
+    <span>Score <b class="hud-score">000000</b></span>
+    <span>Hi <b class="hud-hi">000000</b></span>
+    <span class="hud-coins"><img src="{{ "sprites/coin.svg" | absURL }}" alt="" width="16" height="16">×<b class="hud-c">0</b></span>
+  </div>
+  <p class="game-msg" aria-live="polite"><span class="game-msg-text"></span></p>
+  <h1 id="go-title" class="game-over-title">Game over</h1>
+  <p class="game-over-text">This page doesn't exist. The link might be wrong, or the post moved. You can keep running while you're here, though.</p>
+  <div class="game-over-actions">
+    <button class="btn press-start" type="button">Retry</button>
+    <a class="btn btn-primary" href="{{ "" | absLangURL }}">Continue ▶</a>
+  </div>
 </section>
 {{- end }}

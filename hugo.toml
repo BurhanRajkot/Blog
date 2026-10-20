@@ -47,34 +47,28 @@ ignoreFiles = ['/charts/[^/]+\.html$']
   # Nice UX bits
   ShowBreadCrumbs   = false   # section shows in the post meta instead
   ShowCodeCopyButtons = true
+  ShowPostNavLinks    = true   # "next/previous level" buttons under posts
   disableThemeToggle  = false   # keep the theme switcher
   comments           = false    # set true if you later add Disqus/Utterances/etc.
 
   author = "Burhanuddin"
-  since  = "2025"            # year the blog started; shown on the home page
   # Optional: small text under the title in browser tab (PaperMod label)
-  images = ["images/profile.jpg"]   # default social-share image
   [params.label]
     text = "Noitas"
+    # icon = "/favicon.ico"     # uncomment & set if you add a favicon
+    # iconHeight = 32
 
-# Home page. The hero reads these; edit freely.
+# Profile mode (PaperMod special home layout)
 [params.profileMode]
   enabled      = true
-  name         = "Burhanuddin"
-  greeting     = "Hi, I'm Burhanuddin."
-  tagline      = "I take things apart to see how they work, then write down what I found."
-  subtitle     = "This is my digital diary: programming, game dev, the books I'm reading, and whatever else is going on in my life. Raw, unfiltered, and mine."
-  imageUrl     = "images/profile.jpg"   # lives in assets/ so Hugo can resize it
-  imageTitle   = "Burhanuddin at home, bookshelf behind him"
-  caption      = "Self-portrait at my desk, bookshelf behind me."
-
-  # "Now" list on the home page: what you're up to right now. Keep it current.
-  [[params.profileMode.now]]
-    label = "Tinkering"
-    text  = "Ubuntu + XFCE running on a Samsung Tab A8"
-  [[params.profileMode.now]]
-    label = "Writing"
-    text  = "This blog, since November 2025"
+  title        = "Hi, I'm Burhanuddin"
+  playerName   = "Burhanuddin"
+  playerClass  = "Dev / Gamer / Reader"
+  subtitle     = "I write about programming, game dev, and things going on in my life. Welcome to my blog."
+  imageUrl     = "/images/profile.jpg"
+  imageTitle   = "Burhanuddin in front of a bookshelf"
+  imageWidth   = 720
+  imageHeight  = 900
 
 # Only these 3 social icons appear globally (profile/footer)
 [[params.socialIcons]]
@@ -96,11 +90,6 @@ ignoreFiles = ['/charts/[^/]+\.html$']
 
 # ------------ Menus ------------
 [menu]
-
-  [[menu.main]]
-    name   = "Home"
-    url    = "/"
-    weight = 1
 
   [[menu.main]]
     name   = "Programming"
@@ -126,6 +115,11 @@ ignoreFiles = ['/charts/[^/]+\.html$']
     name   = "About"
     url    = "/about/"
     weight = 6
+
+  [[menu.main]]
+    name   = "Shop"
+    url    = "/shop/"
+    weight = 7
 
 # ------------ Markup / Code Highlighting ------------
 [markup]
