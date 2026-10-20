@@ -1,0 +1,2 @@
+{{- /* Stable view-transition-name for a post title, so it morphs from the list into the article */ -}}
+{{- return printf "t-%s" (substr (md5 .RelPermalink) 0 10) -}}

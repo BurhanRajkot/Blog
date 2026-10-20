@@ -1,6 +1,0 @@
-{{- /* Post meta as HUD chips: world, date, playtime. Overrides PaperMod's post_meta.html */ -}}
-{{- if .IsPage }}
-{{- with site.GetPage .Section }}<a class="world-tag" data-world="{{ $.Section }}" href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}
-{{- end }}
-{{- if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>{{ end }}
-{{- if .Param "ShowReadingTime" }}<span>Playtime {{ .ReadingTime }} min</span>{{ end }}

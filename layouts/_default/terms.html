@@ -1,0 +1,17 @@
+{{- define "main" }}
+<header class="page-head wrap">
+  <p class="eyebrow">Index</p>
+  <h1 class="page-title">{{ .Title }}</h1>
+</header>
+<div class="wrap">
+  {{- with .Data.Terms.Alphabetical }}
+  <ul class="term-cloud">
+    {{- range . }}
+    <li><a href="{{ .Page.RelPermalink }}">#{{ .Page.Title }} <sup class="mono">{{ .Count }}</sup></a></li>
+    {{- end }}
+  </ul>
+  {{- else }}
+  <div class="empty"><p class="empty-title">Nothing tagged yet.</p></div>
+  {{- end }}
+</div>
+{{- end }}

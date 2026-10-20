@@ -1,0 +1,24 @@
+{{- /* The real photo, framed like a print. Context: dict "page", optional "eager" (above the fold), optional "sizes" */ -}}
+{{- $p := site.Params.profileMode }}
+{{- $img := resources.Get $p.imageUrl }}
+{{- $alt := $p.imageTitle | default site.Params.author }}
+<figure class="portrait">
+  <div class="portrait-frame" data-tilt>
+    {{- with $img }}
+    {{- $s := .Resize "480x webp q82" }}
+    {{- $m := .Resize "720x webp q82" }}
+    <img class="portrait-photo"
+         src="{{ $m.RelPermalink }}"
+         srcset="{{ $s.RelPermalink }} 480w, {{ $m.RelPermalink }} 720w"
+         sizes="{{ $.sizes | default "(min-width: 960px) 40vw, 90vw" }}"
+         width="{{ $m.Width }}" height="{{ $m.Height }}"
+         alt="{{ $alt }}"
+         {{ if $.eager }}fetchpriority="high"{{ else }}loading="lazy"{{ end }} decoding="async">
+    {{- end }}
+    <img class="portrait-pixel" src="{{ "images/profile-pixel.png" | relURL }}" alt="" width="64" height="80" loading="lazy" aria-hidden="true">
+    <span class="portrait-sheen" aria-hidden="true"></span>
+  </div>
+  {{- with $p.caption }}
+  <figcaption><span class="mono">Fig. 01</span> {{ . }}</figcaption>
+  {{- end }}
+</figure>

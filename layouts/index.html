@@ -1,0 +1,103 @@
+{{- define "main" }}
+{{- $p := site.Params.profileMode }}
+{{- $pages := (where site.RegularPages "Section" "in" site.Params.mainSections).ByDate.Reverse }}
+{{- $words := 0 }}
+{{- range $pages }}{{ $words = add $words .WordCount }}{{ end }}
+{{- $numerals := slice "I" "II" "III" "IV" "V" "VI" "VII" "VIII" }}
+
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <p class="eyebrow hero-eyebrow"><span class="dot" aria-hidden="true"></span>{{ site.Title }}, a personal log since {{ site.Params.since }}</p>
+    <h1 id="hero-title" class="hero-title">
+      {{- range $i, $w := split ($p.greeting | default (printf "Hi, I'm %s." site.Params.author)) " " }}
+      <span class="word" style="--w: {{ $i }}"><span>{{ $w }}</span></span>
+      {{- end }}
+    </h1>
+    {{- with $p.tagline }}
+    <p class="hero-tagline">{{ . }}</p>
+    {{- end }}
+    {{- with $p.subtitle }}
+    <p class="hero-intro">{{ . | markdownify }}</p>
+    {{- end }}
+
+    {{- with $p.now }}
+    <div class="now">
+      <p class="now-label mono"><span class="pulse" aria-hidden="true"></span>Right now</p>
+      <dl>
+        {{- range . }}
+        <div><dt>{{ .label }}</dt><dd>{{ .text }}</dd></div>
+        {{- end }}
+      </dl>
+    </div>
+    {{- end }}
+
+    <div class="hero-actions">
+      <a class="btn" href="#writing">Start reading</a>
+      <a class="link-arrow" href="{{ "about/" | relURL }}">More about me <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+
+  <div class="hero-portrait">
+    {{- partial "portrait.html" (dict "page" . "eager" true) }}
+    <svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
+      <defs><path id="stamp-circle" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+      <text><textPath href="#stamp-circle" textLength="286" lengthAdjust="spacing">{{ upper site.Title }} · A PERSONAL LOG · SINCE {{ site.Params.since }} ·</textPath></text>
+      <circle cx="60" cy="60" r="5"/>
+    </svg>
+  </div>
+</section>
+
+<section class="chapters wrap" aria-labelledby="chapters-title">
+  <header class="section-head reveal">
+    <p class="eyebrow">Contents</p>
+    <h2 id="chapters-title">What I write about</h2>
+    <p class="section-note mono">{{ len $pages }} {{ cond (eq (len $pages) 1) "entry" "entries" }} · {{ lang.FormatNumber 0 $words }} words so far</p>
+  </header>
+  <ol class="chapter-list">
+    {{- range $i, $s := site.Params.mainSections }}
+    {{- with site.GetPage (printf "/%s" $s) }}
+    {{- $n := len .RegularPages }}
+    <li class="chapter reveal{{ if not $n }} is-empty{{ end }}" style="--i: {{ $i }}">
+      <a href="{{ .RelPermalink }}">
+        <span class="chapter-no">{{ index $numerals $i }}</span>
+        <span class="chapter-title">{{ .Title }}</span>
+        <span class="chapter-desc">{{ .Description }}</span>
+        <span class="chapter-count mono">{{ if $n }}{{ $n }} {{ cond (eq $n 1) "entry" "entries" }}{{ else }}Being written{{ end }}</span>
+      </a>
+    </li>
+    {{- end }}
+    {{- end }}
+  </ol>
+</section>
+
+<section class="writing wrap" id="writing" aria-labelledby="writing-title">
+  <header class="section-head reveal">
+    <p class="eyebrow">Recent entries</p>
+    <h2 id="writing-title">Latest writing</h2>
+  </header>
+
+  {{- with index $pages 0 }}
+  {{- $lead := . }}
+  <article class="lead-entry reveal">
+    <a href="{{ .RelPermalink }}">
+      <p class="lead-kicker mono">
+        <span class="tag">Newest</span>
+        {{ with site.GetPage .Section }}<span>{{ .Title }}</span>{{ end }}
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+      </p>
+      <h3 class="lead-title" style="view-transition-name: {{ partial "vt-name.html" . }}">{{ .Title }}</h3>
+      {{- with .Description }}<p class="lead-desc">{{ . }}</p>{{ end }}
+      <p class="lead-more"><span>Read the entry</span> <span class="mono">{{ .ReadingTime }} min</span></p>
+    </a>
+  </article>
+  {{- end }}
+
+  {{- with after 1 (first 8 $pages) }}
+  <ol class="entries">
+    {{- range $i, $page := . }}
+    {{- partial "post-row.html" (dict "page" $page "i" $i "h" 3 "section" true) }}
+    {{- end }}
+  </ol>
+  {{- end }}
+</section>
+{{- end }}

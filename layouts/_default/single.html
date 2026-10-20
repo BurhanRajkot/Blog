@@ -1,0 +1,70 @@
+{{- define "main" }}
+{{- $avatar := "" }}
+{{- with resources.Get site.Params.profileMode.imageUrl }}{{ $avatar = .Fill "120x120 Bottom webp q85" }}{{ end }}
+{{- $section := site.GetPage .Section }}
+
+<article class="post">
+  <header class="post-head">
+    <p class="post-kicker mono">
+      {{- with $section }}<a href="{{ .RelPermalink }}"><span aria-hidden="true">←</span> {{ .Title }}</a>{{ end }}
+      <span class="sep" aria-hidden="true"></span>
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+      <span>{{ .ReadingTime }} min read</span>
+      {{- if .Draft }}<span class="tag">Draft</span>{{ end }}
+    </p>
+    <h1 class="post-title" style="view-transition-name: {{ partial "vt-name.html" . }}">{{ .Title }}</h1>
+    {{- with .Description }}
+    <p class="post-lede">{{ . }}</p>
+    {{- end }}
+    <div class="byline">
+      {{- with $avatar }}<img src="{{ .RelPermalink }}" width="60" height="60" alt="">{{ end }}
+      <p><span>Written by</span> <a href="{{ "about/" | relURL }}">{{ site.Params.author }}</a></p>
+    </div>
+  </header>
+
+  {{- if and (.Param "ShowToc") (gt (len (findRE "<li" .TableOfContents)) 2) }}
+  <details class="toc wrap-text">
+    <summary class="mono">In this entry</summary>
+    {{ .TableOfContents }}
+  </details>
+  {{- end }}
+
+  <div class="prose post-body">
+    {{- partial "anchored_headings.html" .Content }}
+  </div>
+
+  <footer class="post-foot">
+    <div class="signoff">
+      {{- with $avatar }}<img src="{{ .RelPermalink }}" width="60" height="60" alt="">{{ end }}
+      <div>
+        <p class="signoff-line">Thanks for reading.</p>
+        <p class="signoff-name">{{ site.Params.author }}</p>
+      </div>
+    </div>
+
+    {{- with .GetTerms "tags" }}
+    <ul class="tags" aria-label="Tags">
+      {{- range . }}<li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>{{ end }}
+    </ul>
+    {{- end }}
+  </footer>
+
+  {{- $prev := .PrevInSection }}{{ $next := .NextInSection }}
+  {{- if or $prev $next }}
+  <nav class="post-nav wrap" aria-label="More in {{ with $section }}{{ .Title }}{{ end }}">
+    {{- with $next }}
+    <a class="post-nav-link" href="{{ .RelPermalink }}">
+      <span class="mono">← Newer</span>
+      <span class="post-nav-title">{{ .Title }}</span>
+    </a>
+    {{- else }}<span></span>{{ end }}
+    {{- with $prev }}
+    <a class="post-nav-link is-next" href="{{ .RelPermalink }}">
+      <span class="mono">Older →</span>
+      <span class="post-nav-title">{{ .Title }}</span>
+    </a>
+    {{- end }}
+  </nav>
+  {{- end }}
+</article>
+{{- end }}

@@ -1,0 +1,29 @@
+{{- $labels := dict "github" "GitHub" "linkedin" "LinkedIn" "email" "Email" "x" "X" "twitter" "Twitter" }}
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-call">
+      <p class="eyebrow">The end of the page, not the conversation</p>
+      <p class="footer-line">Say hello<span class="accent">.</span></p>
+      <ul class="footer-links">
+        {{- range site.Params.socialIcons }}
+        <li>
+          <a href="{{ .url }}"{{ if not (hasPrefix .url "mailto:") }} target="_blank" rel="noopener"{{ end }}>
+            <span>{{ index $labels .name | default (humanize .name) }}</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </li>
+        {{- end }}
+      </ul>
+    </div>
+
+    <div class="footer-base">
+      <p>&copy; {{ now.Year }} {{ site.Params.author }}. Written by a person. Built with Hugo.</p>
+      <p class="footer-meta">
+        <a href="{{ "index.xml" | relURL }}">RSS</a>
+        <a href="{{ "tags/" | relURL }}">Tags</a>
+        <a href="#top" class="to-top">Back to top ↑</a>
+      </p>
+    </div>
+  </div>
+</footer>
+<div class="toast" role="status" aria-live="polite" hidden></div>

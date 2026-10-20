@@ -1,49 +1,48 @@
 {{- define "main" }}
+{{- $numerals := slice "I" "II" "III" "IV" "V" "VI" "VII" "VIII" }}
+{{- $no := "" }}
+{{- range $i, $s := site.Params.mainSections }}{{ if and (eq $.Kind "section") (eq $s $.Section) }}{{ $no = index $numerals $i }}{{ end }}{{ end }}
 
-{{- if (and site.Params.profileMode.enabled .IsHome) }}
-{{- partial "index_profile.html" . }}
-{{- else }}
-
-{{- $worldNo := 0 }}
-{{- range $i, $s := site.Params.mainSections }}{{ if and (eq $.Kind "section") (eq $s $.Section) }}{{ $worldNo = add $i 1 }}{{ end }}{{ end }}
-
-<header class="page-header world-banner pixel-box" {{ if $worldNo }}data-world="{{ .Section }}"{{ end }}>
-  {{- if $worldNo }}
-  <p class="world-no">World {{ $worldNo }}</p>
-  {{- else if eq .Kind "term" }}
-  <p class="world-no">{{ .Parent.Title }}</p>
-  {{- end }}
-  <h1>{{ .Title }}</h1>
+<header class="page-head wrap">
+  <p class="eyebrow">
+    {{- if $no }}Chapter {{ $no }}
+    {{- else if eq .Kind "term" }}{{ .Parent.Title }}
+    {{- else }}Index{{ end -}}
+  </p>
+  <h1 class="page-title">{{ if eq .Kind "term" }}#{{ end }}{{ .Title }}</h1>
   {{- with .Description }}
-  <p class="page-description">{{ . | markdownify }}</p>
+  <p class="page-lede">{{ . | markdownify }}</p>
+  {{- end }}
+  {{- with .RegularPages }}
+  <p class="page-count mono">{{ len . }} {{ cond (eq (len .) 1) "entry" "entries" }}</p>
   {{- end }}
 </header>
 
 {{- if .Content }}
-<div class="post-content">{{ .Content }}</div>
+<div class="wrap"><div class="prose">{{ .Content }}</div></div>
 {{- end }}
 
+<div class="wrap">
 {{- $paginator := .Paginate .RegularPages }}
 {{- with $paginator.Pages }}
-<ol class="slots">
+<ol class="entries">
   {{- range $i, $page := . }}
-  {{- partial "entry-row.html" (dict "page" $page "i" $i "section" (eq $.Kind "term")) }}
+  {{- partial "post-row.html" (dict "page" $page "i" $i "section" (ne $.Kind "section")) }}
   {{- end }}
 </ol>
 {{- else }}
-<div class="empty-world pixel-box">
-  <p class="empty-world-title">No saves here yet</p>
-  <p>This world is still being built. Head back to the <a href="{{ "" | relURL }}">title screen</a> to pick another one.</p>
+<div class="empty">
+  <p class="empty-title">This chapter is still being written.</p>
+  <p>Nothing here yet. In the meantime, <a href="{{ "" | relURL }}#writing">read what's already out</a>.</p>
 </div>
 {{- end }}
 
 {{- if gt $paginator.TotalPages 1 }}
-<nav class="pagination" aria-label="Pagination">
-  {{- with $paginator.Prev }}<a class="btn prev" href="{{ .URL | absURL }}">◀ Newer</a>{{ end }}
-  <span>Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
-  {{- with $paginator.Next }}<a class="btn next" href="{{ .URL | absURL }}">Older ▶</a>{{ end }}
+<nav class="pager" aria-label="Pagination">
+  {{- with $paginator.Prev }}<a class="link-arrow back" href="{{ .URL }}"><span aria-hidden="true">←</span> Newer</a>{{ else }}<span></span>{{ end }}
+  <span class="mono">Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
+  {{- with $paginator.Next }}<a class="link-arrow" href="{{ .URL }}">Older <span aria-hidden="true">→</span></a>{{ else }}<span></span>{{ end }}
 </nav>
 {{- end }}
-
-{{- end }}
+</div>
 {{- end }}
