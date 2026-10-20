@@ -19,9 +19,30 @@ const store = {
   },
 };
 
-// ---------- 8-bit sound (off until the player turns it on) ----------
+// ---------- 8-bit sound ----------
+// On by default. Browsers only allow audio after a click or key press, so the
+// AudioContext is created on the first gesture; anything before that stays silent.
 let audio = null;
-let soundOn = store.get('sound', false);
+let master = null;
+let soundOn = store.get('sound', true);
+let musicOn = store.get('music', true);
+
+function ensureAudio() {
+  if (audio) return audio;
+  try {
+    audio = new (window.AudioContext || window.webkitAudioContext)();
+    master = audio.createGain();
+    master.gain.value = 0.9;
+    master.connect(audio.destination);
+  } catch (e) { audio = null; }
+  return audio;
+}
+
+['pointerdown', 'keydown', 'touchstart'].forEach((ev) => addEventListener(ev, () => {
+  if (!soundOn) return;
+  ensureAudio();
+  if (audio && audio.state === 'suspended') audio.resume();
+}, { capture: true, passive: true }));
 
 function tone(freq, dur, { to = freq, type = 'square', vol = 0.06, at = 0 } = {}) {
   const t0 = audio.currentTime + at;
@@ -32,18 +53,45 @@ function tone(freq, dur, { to = freq, type = 'square', vol = 0.06, at = 0 } = {}
   if (to !== freq) osc.frequency.exponentialRampToValueAtTime(to, t0 + dur);
   gain.gain.setValueAtTime(vol, t0);
   gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  osc.connect(gain).connect(audio.destination);
+  osc.connect(gain).connect(master);
   osc.start(t0);
   osc.stop(t0 + dur + 0.02);
+}
+
+let noiseBuf = null;
+function noise(dur, { vol = 0.03, at = 0, hp = 4000 } = {}) {
+  if (!noiseBuf) {
+    noiseBuf = audio.createBuffer(1, audio.sampleRate * 0.5, audio.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  const t0 = audio.currentTime + at;
+  const src = audio.createBufferSource();
+  const filter = audio.createBiquadFilter();
+  const gain = audio.createGain();
+  src.buffer = noiseBuf;
+  filter.type = 'highpass';
+  filter.frequency.value = hp;
+  gain.gain.setValueAtTime(vol, t0);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  src.connect(filter).connect(gain).connect(master);
+  src.start(t0);
+  src.stop(t0 + dur + 0.02);
 }
 
 const SFX = {
   jump: () => tone(260, 0.14, { to: 620 }),
   jump2: () => tone(420, 0.12, { to: 900 }),
-  coin: () => { tone(988, 0.06); tone(1319, 0.16, { at: 0.06 }); },
-  hit: () => tone(180, 0.18, { to: 90, type: 'sawtooth', vol: 0.05 }),
+  // Coins climb in pitch as a combo builds
+  coin: (combo = 1) => { const k = 2 ** (Math.min(combo - 1, 12) / 12); tone(988 * k, 0.06); tone(1319 * k, 0.16, { at: 0.06 }); },
+  hit: () => { tone(180, 0.18, { to: 90, type: 'sawtooth', vol: 0.05 }); noise(0.12, { vol: 0.05, hp: 800 }); },
+  stomp: () => { tone(300, 0.08, { to: 120 }); noise(0.08, { vol: 0.05, hp: 1500 }); },
   die: () => { tone(440, 0.12, { to: 220 }); tone(220, 0.45, { to: 55, type: 'sawtooth', at: 0.12, vol: 0.05 }); },
+  fall: () => tone(700, 0.6, { to: 60, type: 'triangle', vol: 0.08 }),
+  power: () => [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, 0.07, { at: i * 0.05, vol: 0.05 })),
   move: () => tone(440, 0.04, { vol: 0.03 }),
+  tick: () => tone(1800, 0.015, { vol: 0.012 }),
+  click: () => { tone(880, 0.03, { vol: 0.03 }); tone(1320, 0.04, { at: 0.03, vol: 0.025 }); },
   select: () => { tone(660, 0.05); tone(990, 0.08, { at: 0.05 }); },
   start: () => [392, 523, 659, 784].forEach((f, i) => tone(f, 0.09, { at: i * 0.07 })),
   unlock: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.1, { at: i * 0.075, vol: 0.05 })),
@@ -52,23 +100,77 @@ const SFX = {
   pause: () => { tone(988, 0.06); tone(740, 0.08, { at: 0.06 }); },
   blip: () => tone(1400, 0.02, { vol: 0.015 }),
   level: () => [523, 784, 1047].forEach((f, i) => tone(f, 0.12, { at: i * 0.1 })),
+  over: () => [523, 494, 466, 440].forEach((f, i) => tone(f, i === 3 ? 0.5 : 0.18, { at: i * 0.2, type: 'triangle', vol: 0.07 })),
 };
 
-function sfx(name) {
-  if (!soundOn || !SFX[name]) return;
-  try {
-    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
-    if (audio.state === 'suspended') audio.resume();
-    SFX[name]();
-  } catch (e) {}
+function sfx(name, arg) {
+  if (!soundOn || !SFX[name] || !ensureAudio() || audio.state !== 'running') return;
+  try { SFX[name](arg); } catch (e) {}
 }
+
+// ---------- Chiptune soundtrack for runs ----------
+// A four-bar loop in A minor (Am, F, C, G): square-wave lead, triangle bass, noise hats.
+// Notes are MIDI numbers; 0 is a rest. Scheduled slightly ahead so timing stays tight.
+const LEAD = [
+  69, 0, 72, 0, 76, 0, 72, 0, 74, 0, 72, 0, 69, 0, 67, 0,
+  65, 0, 69, 0, 72, 0, 74, 0, 72, 0, 69, 0, 65, 0, 64, 0,
+  67, 0, 72, 0, 76, 0, 79, 0, 76, 0, 72, 0, 67, 0, 72, 0,
+  71, 0, 74, 0, 79, 0, 74, 0, 71, 0, 67, 0, 74, 0, 0, 0,
+];
+const ROOTS = [45, 41, 48, 43];
+const BASS_STEP = [0, null, 12, null, 0, null, 12, null, 0, null, 12, null, 0, null, 12, 7];
+const hz = (m) => 440 * 2 ** ((m - 69) / 12);
+
+const music = (() => {
+  let timer = 0, step = 0, nextAt = 0, bpm = 150, playing = false;
+  function schedule() {
+    const stepDur = 60 / bpm / 4;
+    while (nextAt < audio.currentTime + 0.12) {
+      const at = nextAt - audio.currentTime;
+      const lead = LEAD[step % 64];
+      if (lead) tone(hz(lead), stepDur * 1.6, { vol: 0.022, at: Math.max(0, at) });
+      const b = BASS_STEP[step % 16];
+      if (b !== null) tone(hz(ROOTS[Math.floor(step / 16) % 4] + b), stepDur * 0.9, { type: 'triangle', vol: 0.06, at: Math.max(0, at) });
+      if (step % 2 === 0) noise(0.03, { vol: step % 4 === 0 ? 0.018 : 0.01, at: Math.max(0, at), hp: 6000 });
+      nextAt += stepDur;
+      step += 1;
+    }
+  }
+  return {
+    play() {
+      if (playing || !soundOn || !musicOn || !ensureAudio() || audio.state !== 'running') return;
+      playing = true;
+      step = 0;
+      nextAt = audio.currentTime + 0.05;
+      schedule();
+      timer = setInterval(schedule, 25);
+    },
+    stop() {
+      if (!playing) return;
+      playing = false;
+      clearInterval(timer);
+    },
+    tempo(next) { bpm = next; },
+    get playing() { return playing; },
+  };
+})();
 
 function setSound(on) {
   soundOn = on;
   store.set('sound', on);
+  if (on) { ensureAudio(); audio?.resume(); }
+  else music.stop();
   document.querySelectorAll('.sound-toggle').forEach((b) => b.setAttribute('aria-pressed', String(on)));
   syncMenu();
-  if (on) sfx('select');
+  if (on) setTimeout(() => sfx('select'), 30);
+}
+
+function setMusic(on) {
+  musicOn = on;
+  store.set('music', on);
+  if (!on) music.stop();
+  syncMenu();
+  sfx('select');
 }
 
 // ---------- Toast ----------
@@ -253,6 +355,7 @@ function syncMenu() {
   if (!menu) return;
   const set = (sel, text) => { const el = menu.querySelector(sel); if (el) el.textContent = text; };
   set('.pm-sound', soundOn ? 'On' : 'Off');
+  set('.pm-music', musicOn ? 'On' : 'Off');
   set('.pm-crt', root.classList.contains('crt') ? 'On' : 'Off');
   set('.pm-theme', root.dataset.theme === 'dark' ? 'Night' : 'Day');
   set('.pm-trophies', `${unlocked.size}/${ACHIEVEMENTS.length}`);
@@ -291,6 +394,7 @@ if (menu) {
     if (act === 'resume') { sfx('select'); closeMenu(); }
     if (act === 'screen') { sfx('select'); showScreen(b.dataset.to); }
     if (act === 'sound') setSound(!soundOn);
+    if (act === 'music') setMusic(!musicOn);
     if (act === 'crt') { setCRT(!root.classList.contains('crt')); sfx('select'); }
     if (act === 'theme') themeBtn?.click();
   });
@@ -511,6 +615,7 @@ function openVault(vault, animate) {
   });
   addCopyButtons(body);
   body.hidden = false;
+  setTimeout(() => revealIn(body), 0);
   if (animate) {
     vault.classList.add('opening');
     setTimeout(() => { vault.hidden = true; }, still ? 0 : 700);
@@ -673,6 +778,62 @@ function setupShop(shop) {
 const shop = document.querySelector('.shop');
 if (shop) setupShop(shop);
 
+// ---------- UI feel: menu sounds, click sparks, stepped reveals ----------
+const UI = '.btn, .world a, .slot > a, .shop-item, #menu a, .pm-list a, .pm-list button, .wallet, .hud-btn, #theme-toggle, .paginav a, .post-tags a, .logo a';
+const fine = matchMedia('(hover: hover) and (pointer: fine)');
+let lastHover = null, lastTick = 0;
+document.addEventListener('pointerover', (e) => {
+  if (!fine.matches) return;
+  const el = e.target.closest(UI);
+  if (!el || el === lastHover) { if (!el) lastHover = null; return; }
+  lastHover = el;
+  const now = performance.now();
+  if (now - lastTick > 45) { lastTick = now; sfx('tick'); }
+});
+document.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
+  const el = e.target.closest(UI);
+  // Buttons with their own sounds (shop, vault, pause menu actions) skip the generic click
+  if (el && !el.matches('.item-btn, .vault-buy, .sound-toggle, [data-act], #theme-toggle')) sfx('click');
+  if (still || (e.target.closest('.title-screen, .game-over') && !el)) return;
+  spark(e.clientX, e.clientY);
+});
+
+function spark(x, y) {
+  const box = document.createElement('span');
+  box.className = 'spark';
+  box.style.left = x + 'px';
+  box.style.top = y + 'px';
+  const dirs = [[-1, -1], [0, -1.3], [1, -1], [-1.2, 0.2], [1.2, 0.2], [0, 1]];
+  box.innerHTML = dirs.map(([dx, dy]) => `<i style="--dx:${dx};--dy:${dy}"></i>`).join('');
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 450);
+}
+
+// Content steps into view as you scroll, like sprites loading in
+const REVEAL = '.screen-heading, .world, .slot, .shop-item, .player-links li, .earn-list li, .empty-world, .level-end, .paginav, .post-tags, .world-banner, .post-content > :is(h2, h3, pre, .highlight, blockquote, table, figure, div, ul, ol)';
+const revealer = !still && 'IntersectionObserver' in window && new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('in');
+    revealer.unobserve(en.target);
+  });
+}, { rootMargin: '0px 0px -8% 0px' });
+
+function revealIn(scope = document) {
+  if (!revealer) return;
+  scope.querySelectorAll(REVEAL).forEach((el) => {
+    if (el.classList.contains('rv')) return;
+    // Things already on screen keep their load animation; only what's below the fold steps in
+    if (scope === document && el.getBoundingClientRect().top < innerHeight) return;
+    const i = [...el.parentElement.children].indexOf(el);
+    el.style.setProperty('--rv-d', `${(i % 6) * 70}ms`);
+    el.classList.add('rv');
+    revealer.observe(el);
+  });
+}
+revealIn();
+
 // ---------- Daily bonus and first visit ----------
 const today = new Date().toISOString().slice(0, 10);
 const lastDay = store.get('day', null);
@@ -690,7 +851,8 @@ syncMenu();
 
 // Shared with scene.js
 window.Noitas = {
-  sfx, say, unlock, confetti, store, earn, SPRITES,
+  sfx, say, unlock, confetti, store, earn, music, SPRITES,
+  pause: () => openMenu(),
   get skin() { return equipped.skin; },
   has: (id) => owned.has(id),
 };

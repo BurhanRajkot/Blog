@@ -15,8 +15,10 @@
 
   <div class="game-hud" aria-hidden="true">
     <span>Score <b class="hud-score">000000</b></span>
+    <span>Lv <b class="hud-level">1</b></span>
     <span>Hi <b class="hud-hi">000000</b></span>
     <span class="hud-coins"><img src="{{ "sprites/coin.svg" | absURL }}" alt="" width="16" height="16">×<b class="hud-c">0</b></span>
+    <span class="hud-power" hidden></span>
   </div>
   <p class="game-msg" aria-live="polite"><span class="game-msg-text">Demo</span></p>
 
@@ -25,7 +27,7 @@
   </h1>
   <div class="start-box">
     <button class="press-start" type="button">Press start</button>
-    <p class="start-hint">Space, ↑ or tap to jump. Hold for a higher one.</p>
+    <p class="start-hint"><span class="hint-keys">Space / ↑ to jump, hold for higher · ↓ drops fast · P pauses</span><span class="hint-touch">Tap to jump, hold for higher</span></p>
   </div>
 
   <div class="player pixel-box">

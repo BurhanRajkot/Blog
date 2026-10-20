@@ -53,6 +53,15 @@ ignoreFiles = ['/charts/[^/]+\.html$']
 
   author = "Burhanuddin"
   # Optional: small text under the title in browser tab (PaperMod label)
+  # Favicons: the pixel coin (PaperMod otherwise asks for PNGs that don't exist)
+  [params.assets]
+    favicon          = "sprites/coin.svg"
+    favicon16x16     = "sprites/coin.svg"
+    favicon32x32     = "sprites/coin.svg"
+    apple_touch_icon = "sprites/coin.svg"
+    safari_pinned_tab = "sprites/coin.svg"
+    theme_color      = "#1d2b53"
+
   [params.label]
     text = "Noitas"
     # icon = "/favicon.ico"     # uncomment & set if you add a favicon

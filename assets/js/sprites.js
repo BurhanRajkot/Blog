@@ -22,6 +22,22 @@ export const BAT = [
 ];
 export const MOON = ['..WWW.', '.WWW..', 'WWW...', 'WWW...', 'WWW...', '.WWW..', '..WWW.'];
 export const SUN = ['..OYYO..', '.YYYYYY.', 'OYYYYYYO', 'YYYYYYYY', 'YYYYYYYY', 'OYYYYYYO', '.YYYYYY.', '..OYYO..'];
+// ? block: touch it for a random temporary power (two frames so it glints)
+export const QBLOCK = [
+  ['KKKKKKKK', 'KOYYYYOK', 'KYYKKYYK', 'KYYYYKYK', 'KYYYKYYK', 'KYYYYYYK', 'KOYYKYOK', 'KKKKKKKK'],
+  ['KKKKKKKK', 'KOOOOOOK', 'KOOKKOOK', 'KOOOOKOK', 'KOOOKOOK', 'KOOOOOOK', 'KOOOKOOK', 'KKKKKKKK'],
+];
+
+// 3x5 pixel font for score pop-ups ("#" is ink)
+export const FONT = {
+  0: ['###', '#.#', '#.#', '#.#', '###'], 1: ['.#.', '##.', '.#.', '.#.', '###'],
+  2: ['###', '..#', '###', '#..', '###'], 3: ['###', '..#', '.##', '..#', '###'],
+  4: ['#.#', '#.#', '###', '..#', '..#'], 5: ['###', '#..', '###', '..#', '###'],
+  6: ['###', '#..', '###', '#.#', '###'], 7: ['###', '..#', '.#.', '.#.', '.#.'],
+  8: ['###', '#.#', '###', '#.#', '###'], 9: ['###', '#.#', '###', '..#', '###'],
+  '+': ['...', '.#.', '###', '.#.', '...'], x: ['...', '#.#', '.#.', '#.#', '...'],
+};
+
 // Small shield shown next to the hero during a run
 export const SHIELD = ['.BBBB.', 'BWWWWB', 'BWBBWB', 'BWBBWB', '.BWWB.', '..BB..'];
 

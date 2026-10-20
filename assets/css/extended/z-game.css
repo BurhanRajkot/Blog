@@ -620,7 +620,6 @@ html.pal-virtual :is(.scene canvas, .post-content img, .item-art) { filter: gray
   .wallet, .hud-btn { height: 2.4rem; padding: 0 0.55rem; }
   .pl-desk { display: none; }
   .pl-mob { display: inline; }
-  .logo-switches .sound-toggle,
   .logo-switches #theme-toggle { display: none; }
   .logo a { white-space: nowrap; }
 
@@ -639,7 +638,115 @@ html.pal-virtual :is(.scene canvas, .post-content img, .item-art) { filter: gray
   .shop-wallet b { font-size: 1.6rem; }
 }
 
+/* ---------- Sticky HUD header ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+}
+
+/* ---------- Runner HUD extras ---------- */
+.hud-power {
+  padding: 0 0.35rem;
+  color: var(--p-navy) !important;
+  text-shadow: none !important;
+  background: var(--p-pink);
+  animation: blink 0.6s steps(1, end) infinite;
+}
+
+.game-msg[data-kind="level"] .game-msg-text { background: var(--p-blue); font-size: 1.4rem; animation: pop 0.25s steps(3, end) both; }
+.game-msg[data-kind="combo"] .game-msg-text { background: var(--p-orange); animation: bump 0.3s steps(3, end); }
+.game-msg[data-kind="power"] .game-msg-text { background: var(--p-pink); font-size: 1.3rem; animation: pop 0.25s steps(3, end) both; }
+
+.hint-touch { display: none; }
+@media (hover: none) {
+  .hint-keys { display: none; }
+  .hint-touch { display: inline; }
+}
+
+/* No scrolling or zooming the page by accident while a run is on */
+.title-screen.is-playing,
+.game-over.is-playing { touch-action: none; }
+
+/* ---------- Click sparks ---------- */
+.spark {
+  position: fixed;
+  z-index: 96;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.spark i {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--p-yellow);
+  box-shadow: 0 0 0 1px var(--p-navy);
+  animation: spark 0.42s steps(5, end) forwards;
+}
+
+.spark i:nth-child(even) { background: var(--p-pink); }
+
+/* ---------- Stepped scroll reveals (classes added by game.js) ---------- */
+.rv:not(.in) { opacity: 0; }
+.rv.in { animation: rv-in 0.5s var(--rv-d, 0s) steps(5, end) both; }
+.screen-heading.in::before { animation: turn 0.5s steps(4, end); }
+.post-content h2.in::before { animation: pop 0.35s 0.2s steps(3, end) both; }
+
+/* ---------- Buttons: a pixel glint runs across on hover ---------- */
+.btn,
+.press-start { overflow: hidden; }
+
+.btn::after,
+.press-start::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -30%;
+  width: 18%;
+  background: rgb(255 255 255 / 0.55);
+  box-shadow: 10px 0 0 rgb(255 255 255 / 0.3);
+  pointer-events: none;
+  transform: translateX(0);
+}
+
+.btn,
+.press-start { position: relative; }
+
+.btn:hover::after,
+.press-start:hover::after { animation: glint 0.5s steps(6, end); }
+
+/* World cards wobble a frame when you point at them */
+.world a:hover .world-name { animation: wobble 0.4s steps(4, end); }
+
 /* ---------- Keyframes ---------- */
+@keyframes spark {
+  to { transform: translate(calc(var(--dx) * 22px), calc(var(--dy) * 22px)); opacity: 0; }
+}
+
+@keyframes rv-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes turn {
+  from { transform: rotate(-90deg) scale(0.5); }
+  to { transform: none; }
+}
+
+@keyframes glint {
+  to { transform: translateX(800%); }
+}
+
+@keyframes wobble {
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
 @keyframes spin-coin {
   0%, 100% { transform: scaleX(1); }
   25% { transform: scaleX(0.6); }
@@ -688,4 +795,6 @@ html.pal-virtual :is(.scene canvas, .post-content img, .item-art) { filter: gray
 
 @media (prefers-reduced-motion: reduce) {
   .wallet-plus, .logo-sprite, .shop-wallet img { animation: none !important; }
+  .rv:not(.in) { opacity: 1; }
+  .spark { display: none; }
 }
