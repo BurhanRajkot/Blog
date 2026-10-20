@@ -5,6 +5,9 @@ theme = "PaperMod"
 enableRobotsTXT = true
 canonifyURLs = true
 
+# Chart HTML is pulled in by the chart shortcode via readFile, not built as pages
+ignoreFiles = ['/charts/[^/]+\.html$']
+
 # How many posts per page (PaperMod uses this internally)
 [pagination]
   pagerSize = 10

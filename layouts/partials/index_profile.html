@@ -10,7 +10,12 @@
 {{- $filled := div $into 100 }}
 
 <section class="title-screen" aria-labelledby="game-title">
-  <h1 id="game-title" class="game-title" data-text="{{ site.Title }}">{{ site.Title }}</h1>
+  {{- /* Pixel sky, parallax hills and a runner; drawn by assets/js/scene.js */}}
+  <div class="scene" aria-hidden="true"><canvas></canvas></div>
+  <p class="coin-hud" aria-hidden="true" hidden><i></i><span class="coin-n">0</span></p>
+  <h1 id="game-title" class="game-title" aria-label="{{ site.Title }}">
+    {{- range $i, $c := split site.Title "" }}<span aria-hidden="true" style="--n: {{ $i }}">{{ $c }}</span>{{ end -}}
+  </h1>
   <a class="press-start" href="#saves">Press start</a>
 
   <div class="player pixel-box">
@@ -28,7 +33,7 @@
           <dt>XP</dt>
           <dd>
             <span class="xp-bar" role="img" aria-label="{{ $into }} of 1,000 XP toward level {{ add $lvl 1 }}">
-              {{- range seq 10 }}<i{{ if le . $filled }} class="on"{{ end }}></i>{{ end -}}
+              {{- range seq 10 }}<i{{ if le . $filled }} class="on"{{ end }} style="--n: {{ . }}"></i>{{ end -}}
             </span>
             <span class="xp-note">{{ lang.FormatNumber 0 $xp }} words written, {{ lang.FormatNumber 0 (sub 1000 $into) }} to next level</span>
           </dd>

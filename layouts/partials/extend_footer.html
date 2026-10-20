@@ -3,6 +3,11 @@
 <div class="read-progress" aria-hidden="true"></div>
 {{- end }}
 <div class="toast" role="status" aria-live="polite" hidden></div>
+{{- if .IsHome }}
+{{- with resources.Get "js/scene.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
+{{- end }}
 <script>
 (function () {
   // Portrait: hover shows the real photo on desktop; tap toggles it on touch screens

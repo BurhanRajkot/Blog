@@ -1,7 +1,7 @@
 /* =========================================================
    Noitas: retro game edition
-   Palette: PICO-8. Type: Pixelify Sans for UI and headings,
-   Satoshi for long reading, JetBrains Mono for code.
+   Palette: PICO-8. Type: Pixelify Sans for UI and titles,
+   Atkinson Hyperlegible Next for reading, JetBrains Mono for code.
    Shapes: square, chunky borders, hard offset shadows.
    Motion: steps() timing so things move in frames.
    Loaded by PaperMod from assets/css/extended/.
@@ -16,17 +16,17 @@
 }
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
-  font-weight: 300 900;
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2') format('woff2');
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-VariableItalic.woff2') format('woff2');
-  font-weight: 300 900;
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('/fonts/atkinson-hyperlegible-next-latin-wght-italic.woff2') format('woff2');
+  font-weight: 200 800;
   font-style: italic;
   font-display: swap;
 }
@@ -94,12 +94,12 @@
 
   /* Type */
   --pixel: 'Pixelify Sans', ui-monospace, monospace;
-  --font: 'Satoshi', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
 
   /* Layout and shape */
   --main-width: 1040px;
-  --measure: 42rem;
+  --measure: 44rem;
   --bw: 3px;
   --drop: 5px;
 
@@ -113,6 +113,7 @@
   --surface: var(--p-navy);
   --surface-2: #2a3a6e;
   --ink: var(--p-cream);
+  --text-body: #e9e2df;
   --text-2: var(--p-silver);
   --text-3: #aaa4c6;
   --line: #3b4a80;
@@ -152,6 +153,7 @@ body,
 }
 
 body {
+  overflow-x: clip; /* the home scene bleeds edge to edge */
   font-family: var(--font);
   font-size: 1.0625rem;
   color: var(--ink);
@@ -277,18 +279,77 @@ input:focus-visible {
 
 /* ---------- Home: title screen ---------- */
 .title-screen {
+  --ts-pad: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+  --ground: clamp(5rem, 4rem + 3vw, 7rem);
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto var(--ground) auto;
   grid-template-areas:
     "title start"
+    "ground ground"
     "player player";
   align-items: end;
   column-gap: 2rem;
-  padding-top: clamp(1.5rem, 1rem + 3vw, 4rem);
+  padding-top: var(--ts-pad);
 }
+
+/* Pixel scene behind the title: full-bleed, from under the header down to the ground */
+.scene {
+  position: relative;
+  grid-row: 1 / 3;
+  grid-column: 1 / -1;
+  align-self: stretch;
+  z-index: 0;
+  margin-top: calc(-1 * var(--ts-pad));
+  margin-inline: calc(50% - 50vw);
+  cursor: pointer;
+}
+
+.scene canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.title-screen > :not(.scene) { position: relative; z-index: 1; }
+
+.coin-hud {
+  grid-area: ground;
+  justify-self: end;
+  align-self: start;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0;
+  padding: 0.15rem 0.55rem;
+  font-family: var(--pixel);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--p-navy);
+  background: var(--hl);
+  border: var(--bw) solid var(--p-navy);
+  box-shadow: 3px 3px 0 0 var(--shadow);
+  pointer-events: none;
+}
+
+.coin-hud[hidden] { display: none; }
+
+.coin-hud i {
+  width: 0.7rem;
+  height: 0.9rem;
+  background: var(--p-orange);
+  box-shadow: inset -3px 0 0 var(--p-yellow), 0 0 0 2px var(--p-navy);
+}
+
+.coin-hud::before { content: "COINS"; font-size: 0.85rem; letter-spacing: 0.08em; }
 
 .game-title {
   grid-area: title;
+  display: flex;
   margin-left: -0.04em;
   font-size: clamp(4.25rem, 1.5rem + 11vw, 10rem);
   font-weight: 700;
@@ -299,8 +360,17 @@ input:focus-visible {
   text-shadow:
     0.05em 0.05em 0 var(--logo-s1),
     0.1em 0.1em 0 var(--logo-s2);
-  animation: drop 0.5s steps(5, end) both;
 }
+
+/* Letters drop in one by one, then a hop ripples through every few seconds */
+.game-title span {
+  display: inline-block;
+  animation:
+    drop 0.45s calc(var(--n) * 0.07s) steps(5, end) both,
+    hop 4.5s calc(1.4s + var(--n) * 0.09s) steps(1, end) infinite;
+}
+
+.game-title span:hover { animation: bounce 0.4s steps(4, end); }
 
 .press-start {
   grid-area: start;
@@ -324,7 +394,7 @@ input:focus-visible {
   grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(1.5rem, 1rem + 2vw, 2.75rem);
   align-items: start;
-  margin-top: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+  margin-top: 1.5rem;
   padding: clamp(1.25rem, 1rem + 1vw, 2rem);
   animation: slide-in 0.45s 0.15s var(--frames) both;
 }
@@ -332,7 +402,7 @@ input:focus-visible {
 .portrait {
   position: relative;
   display: block;
-  width: clamp(9rem, 6rem + 9vw, 13rem);
+  width: clamp(14rem, 8rem + 13vw, 20rem);
   aspect-ratio: 4 / 5;
   padding: 0;
   background: var(--surface-2);
@@ -349,6 +419,24 @@ input:focus-visible {
 }
 
 .portrait-pixel { image-rendering: pixelated; }
+
+/* Sparkle that blinks on the portrait frame */
+.portrait::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 2;
+  width: 4px;
+  height: 4px;
+  background: var(--p-yellow);
+  box-shadow:
+    0 -4px 0 var(--p-yellow), 0 4px 0 var(--p-yellow),
+    -4px 0 0 var(--p-yellow), 4px 0 0 var(--p-yellow),
+    0 -8px 0 var(--p-cream), 0 8px 0 var(--p-cream),
+    -8px 0 0 var(--p-cream), 8px 0 0 var(--p-cream);
+  animation: twinkle 1.6s steps(1, end) infinite;
+}
 
 .portrait-real {
   opacity: 0;
@@ -422,7 +510,10 @@ input:focus-visible {
   border: 2px solid var(--ink);
 }
 
-.xp-bar i.on { background: var(--p-green); }
+.xp-bar i.on {
+  background: var(--p-green);
+  animation: fill 0.15s calc(0.7s + var(--n) * 0.12s) steps(1, end) both;
+}
 
 .xp-note {
   font-family: var(--font);
@@ -722,27 +813,33 @@ input:focus-visible {
   color: var(--ink);
 }
 
-/* ---------- Single post ---------- */
+/* ---------- Single post ----------
+   The article is the one place the pixel font steps back: title and HUD
+   chips stay pixel, everything you actually read is set in Atkinson. */
+.post-single {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
 .post-header {
-  margin: clamp(1.5rem, 1rem + 2vw, 3rem) 0 2.5rem;
+  margin: clamp(1.5rem, 1rem + 2vw, 3rem) 0 2.75rem;
   padding-bottom: 2rem;
   background:
     linear-gradient(90deg, var(--ink) 50%, transparent 50%) bottom left / 16px 4px repeat-x;
 }
 
 .post-title {
-  max-width: 24ch;
-  font-size: clamp(2.2rem, 1.3rem + 3.4vw, 3.75rem);
+  font-size: clamp(2.1rem, 1.3rem + 3vw, 3.4rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
   text-shadow: 0.06em 0.06em 0 var(--w, var(--hl));
 }
 
 .post-header .post-description {
-  max-width: var(--measure);
   margin-top: 1.1rem;
   font-size: 1.2rem;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text-2);
 }
 
@@ -772,60 +869,65 @@ input:focus-visible {
 .post-header > :nth-child(2) { animation-delay: 0.08s; }
 .post-header > :nth-child(3) { animation-delay: 0.16s; }
 
-.post-content,
-.toc,
-.post-footer {
-  max-width: var(--measure);
-}
-
 .post-content {
-  font-size: 1.125rem;
+  font-family: var(--font);
+  font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  font-weight: 400;
   line-height: 1.75;
-  color: var(--ink);
+  letter-spacing: 0.005em;
+  color: var(--text-body, var(--ink));
+  font-variant-numeric: lining-nums;
 }
 
 /* Posts that open with a heading repeating the title */
 .post-content > h1:first-child { display: none; }
 
-.post-content p { margin: 0 0 1.15em; }
+.post-content p { margin: 0 0 1.35em; }
 
 .post-content h1,
 .post-content h2,
 .post-content h3,
-.post-content h4 { scroll-margin-top: 2rem; }
+.post-content h4 {
+  scroll-margin-top: 2rem;
+  font-family: var(--font);
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
 
 .post-content h2 {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  margin: 2.4em 0 0.7em;
+  gap: 0.6rem;
+  margin: 2.3em 0 0.75em;
   padding: 0;
   border: 0;
-  font-size: 1.85rem;
-  font-weight: 700;
-  line-height: 1.15;
-}
-
-.post-content h2::before {
-  content: "";
-  flex: none;
-  width: 0.5em;
-  height: 0.5em;
-  background: var(--w, var(--p-red));
-  box-shadow: 3px 3px 0 0 var(--ink);
-}
-
-.post-content h3 {
-  margin: 1.9em 0 0.5em;
-  font-size: 1.4rem;
-  font-weight: 600;
+  font-size: 1.65em;
+  font-weight: 800;
   line-height: 1.2;
 }
 
+/* A pixel bullet keeps the game flavour without pixel letters */
+.post-content h2::before {
+  content: "";
+  flex: none;
+  width: 0.45em;
+  height: 0.45em;
+  background: var(--w, var(--p-red));
+  box-shadow: 3px 3px 0 0 var(--shadow);
+  transform: translateY(-0.05em);
+}
+
+.post-content h3 {
+  margin: 1.9em 0 0.55em;
+  font-size: 1.3em;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
 .post-content h4 {
-  margin: 1.5em 0 0.4em;
-  font-size: 1.15rem;
-  font-weight: 600;
+  margin: 1.6em 0 0.45em;
+  font-size: 1.1em;
+  font-weight: 700;
 }
 
 .post-content a {
@@ -849,20 +951,20 @@ input:focus-visible {
   text-decoration: none;
 }
 
-.post-content strong { font-weight: 700; }
+.post-content strong { font-weight: 700; color: var(--ink); }
 
 .post-content ul,
 .post-content ol {
-  margin: 0 0 1.15em;
-  padding-inline-start: 1.4em;
+  margin: 0 0 1.35em;
+  padding-inline-start: 1.5em;
 }
 
 .post-content ul { list-style: square; }
-.post-content li { margin-bottom: 0.4em; }
+.post-content li { margin-bottom: 0.5em; padding-inline-start: 0.2em; }
 
 .post-content li::marker {
-  color: var(--ink);
-  font-family: var(--pixel);
+  color: var(--w, var(--p-red));
+  font-weight: 700;
 }
 
 /* Notes are dialogue boxes */
@@ -873,7 +975,8 @@ input:focus-visible {
   border: 0;
   border-radius: 0;
   background: var(--surface);
-  font-size: 1.05rem;
+  font-size: 0.95em;
+  line-height: 1.7;
   font-style: normal;
   color: var(--ink);
   box-shadow:
@@ -922,7 +1025,7 @@ input:focus-visible {
 
 .post-content .highlight,
 .post-content > pre {
-  margin: 1.75em 0;
+  margin: 1.75em 4px 1.75em 0;
   border: var(--bw) solid var(--ink);
   box-shadow: var(--drop) var(--drop) 0 0 var(--shadow);
 }
@@ -931,8 +1034,8 @@ input:focus-visible {
 
 .post-content pre code {
   padding: 1.1rem 1.25rem;
-  font-size: 0.875rem;
-  line-height: 1.65;
+  font-size: 0.9rem;
+  line-height: 1.7;
   background: none;
   color: var(--code-text);
 }
@@ -957,7 +1060,8 @@ input:focus-visible {
   display: block;
   overflow-x: auto;
   margin: 1.75em 0;
-  font-size: 1rem;
+  font-size: 0.92em;
+  line-height: 1.5;
   border-collapse: collapse;
   border: var(--bw) solid var(--ink);
 }
@@ -971,8 +1075,7 @@ input:focus-visible {
 }
 
 .post-content table th {
-  font-family: var(--pixel);
-  font-weight: 600;
+  font-weight: 700;
   background: var(--surface-2);
   border-bottom: var(--bw) solid var(--ink);
 }
@@ -1234,6 +1337,28 @@ html.crt body::after {
   to { opacity: 1; }
 }
 
+@keyframes hop {
+  0%, 6% { transform: none; }
+  2% { transform: translateY(-0.08em); }
+  4% { transform: translateY(-0.04em); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: none; }
+  40% { transform: translateY(-0.14em); }
+  70% { transform: translateY(0.03em); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  33% { opacity: 0.4; transform: scale(0.5); }
+  66% { opacity: 0; }
+}
+
+@keyframes fill {
+  from { background: transparent; }
+}
+
 @keyframes blink {
   50% { opacity: 0; }
 }
@@ -1260,16 +1385,20 @@ html.crt body::after {
 @media (max-width: 767px) {
   .title-screen {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto var(--ground) auto;
     grid-template-areas:
       "title"
       "start"
+      "ground"
       "player";
   }
+
+  .scene { grid-row: 1 / 4; }
 
   .press-start { margin: 1rem 0 0; justify-self: start; }
 
   .player { grid-template-columns: 1fr; }
-  .portrait { margin-bottom: 2rem; }
+  .portrait { width: min(100%, 18rem); margin-bottom: 2rem; }
 
   .slots { padding-left: 0; }
   .slot > a::before { display: none; }
